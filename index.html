@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>The Case of the Missing Smile</title>
+  <style>
+    body {
+      background-image: url('images/minimal-geometric-abstract-backg.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="flipbook">
+    <div class="hard">The Case of the Missing Smile</div>
+    <div class="hard"></div>
+    <div>
+      <img src="images/img-1.jpg" alt="Book Cover" />
+    </div>
+    <div>
+      <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
+      <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk. "I think I will handle this one myself."</small>
+    </div>
+    <div>
+      <small>After several minutes of searching through the official Tooth Fairy records, she found what she was looking for. A folder with the name ‘Sophia Sue Simmons’.</small>
+    </div>
+    <div>
+      <img src="images/img-3.jpg" alt="Detective Peterson finding the file" />
+    </div>
+    <div>
+      <small>“Hmm,” Detective Peterson mumbled as she studied the file.</small>
+    </div>
+    <div>
+      <img src="images/img-4.jpg" alt="Detective Peterson studying the file" />
+    </div>
+    <div>
+      <small>As Detective Peterson read the report, she noted that Sophia Sue always smiled. From the time she got out of bed to the time she went back to bed, she smiled. In fact, Sophia Sue never seemed to stop smiling.</small>
+    </div>
+    <div>
+      <img src="images/img-5.jpg" alt="Sophia Sue smiling" />
+    </div>
+    <div class="hard"></div>
+    <div class="hard">Thank You</div>
+  </div>
+
+  <script src="jquery.js"></script>
+  <script src="turn.js"></script>
+  <script>
+    $(document).ready(function() {
+      $(".flipbook").turn();
+    });
+  </script>
+</body>
+
+</html>
