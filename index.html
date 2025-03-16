@@ -6,56 +6,215 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
   <title>The Case of the Missing Smile</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     body {
-      background-image: url('images/minimal-geometric-abstract-backg.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
+  background-image: url('images/minimal-geometric-abstract-backg.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  overflow: hidden;
+}
+
+/* Controls Container */
+.controls-container {
+  position: fixed;
+  bottom: 30px; /* Increased gap for better spacing */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Consistent gap between controls */
+  z-index: 1000;
+  margin-top: 80px;
+}
+
+/* Individual Control Groups */
+.zoom-controls,
+.page-controls,
+.bookmark-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px; /* Uniform height and padding */
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 66, 66, 0.9);
+  height: 45px; /* Ensures all controls have the same height */
+}
+
+/* Bookmark Control with Different Color */
+.bookmark-control {
+  background: rgba(255, 66, 66, 0.9);
+}
+
+/* Control Buttons */
+.control-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px; /* Same height for all buttons */
+  width: 35px;  /* Ensures square shape */
+}
+
+/* Icons Inside Buttons */
+.control-icon {
+  width: 22px;
+  height: 22px;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.control-icon:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Page Input Field */
+.page-input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  font-weight: bold;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+  color: black;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 5px;
+}
+
+/* Disabled Bookmark Button */
+.bookmark-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
   </style>
 </head>
 
 <body>
-  <div class="flipbook">
-    <div class="hard">The Case of the Missing Smile</div>
-    <div class="hard"></div>
-    <div>
-      <img src="images/img-1.jpg" alt="Book Cover" />
+
+  <div class="flipbook-container">
+    <div class="flipbook">
+      <div class="hard">The Case of the Missing Smile</div>
+      <div class="hard"></div>
+      <div><img src="images/img-1.jpg" alt="Book Cover" /></div>
+      <div>
+        <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
+        <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
+      </div>
+      <div><small>After several minutes of searching, she found what she was looking for: a folder with the name ‘Sophia Sue Simmons’.</small></div>
+      <div><img src="images/img-3.jpg" alt="Detective Peterson finding the file" /></div>
+      <div><small>“Hmm,” Detective Peterson mumbled as she studied the file.</small></div>
+      <div><img src="images/img-4.jpg" alt="Detective Peterson studying the file" /></div>
+      <div><small>Sophia Sue always smiled, from morning till night. She never stopped smiling.</small></div>
+      <div><img src="images/img-5.jpg" alt="Sophia Sue smiling" /></div>
+      <div class="hard"></div>
+      <div class="hard">Thank You</div>
     </div>
-    <div>
-      <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
-      <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk. "I think I will handle this one myself."</small>
+  </div>
+
+  <!-- Controls Container -->
+  <div class="controls-container">
+
+    <!-- Zoom Controls -->
+    <div class="zoom-controls">
+      <button class="control-button" onclick="zoomOut()" title="Zoom Out">
+        <img src="images/zoom-out.png" alt="Zoom Out" class="control-icon">
+      </button>
+      <button class="control-button" onclick="resetZoom()" title="Reset Zoom">
+        <img src="images/reset.png" alt="Reset Zoom" class="control-icon">
+      </button>
+      <button class="control-button" onclick="zoomIn()" title="Zoom In">
+        <img src="images/zoom-in.png" alt="Zoom In" class="control-icon">
+      </button>
     </div>
-    <div>
-      <small>After several minutes of searching through the official Tooth Fairy records, she found what she was looking for. A folder with the name ‘Sophia Sue Simmons’.</small>
+
+    <!-- Page Navigation Controls -->
+    <div class="page-controls">
+      <input type="text" id="pageInput" class="page-input" placeholder="1" />
+      <span id="pageTotal">/ 1</span>
     </div>
-    <div>
-      <img src="images/img-3.jpg" alt="Detective Peterson finding the file" />
+
+    <!-- Bookmark Control -->
+    <div class="bookmark-control">
+      <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
+        <img src="images/star.png" alt="Bookmark" class="control-icon">
+      </button>
     </div>
-    <div>
-      <small>“Hmm,” Detective Peterson mumbled as she studied the file.</small>
-    </div>
-    <div>
-      <img src="images/img-4.jpg" alt="Detective Peterson studying the file" />
-    </div>
-    <div>
-      <small>As Detective Peterson read the report, she noted that Sophia Sue always smiled. From the time she got out of bed to the time she went back to bed, she smiled. In fact, Sophia Sue never seemed to stop smiling.</small>
-    </div>
-    <div>
-      <img src="images/img-5.jpg" alt="Sophia Sue smiling" />
-    </div>
-    <div class="hard"></div>
-    <div class="hard">Thank You</div>
+
   </div>
 
   <script src="jquery.js"></script>
   <script src="turn.js"></script>
   <script>
-    $(document).ready(function() {
-      $(".flipbook").turn();
-    });
-  </script>
-</body>
+    $(document).ready(function () {
+      const flipbook = $(".flipbook");
+      flipbook.turn();
+      
+      const totalPages = flipbook.turn("pages");
+      $("#pageTotal").text(`/ ${totalPages}`);
+      updatePageIndex(1);
 
+      flipbook.bind("turning", function (event, page) {
+        updatePageIndex(page);
+      });
+
+      $("#pageInput").keypress(function (event) {
+        if (event.key === "Enter") {
+          goToPage();
+        }
+      });
+    });
+
+    function updatePageIndex(currentPage) {
+      $("#pageInput").val(currentPage);
+      updateBookmarkButton(currentPage);
+    }
+
+    function goToPage() {
+      const pageNumber = parseInt($("#pageInput").val());
+      const totalPages = $(".flipbook").turn("pages");
+
+      if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
+        $(".flipbook").turn("page", pageNumber);
+      } else {
+        alert(`Enter a valid page number (1 - ${totalPages})`);
+      }
+    }
+
+    let zoomLevel = 1;
+    function zoomIn() { if (zoomLevel < 2) { zoomLevel += 0.2; updateZoom(); } }
+    function zoomOut() { if (zoomLevel > 1) { zoomLevel -= 0.2; updateZoom(); } }
+    function resetZoom() { zoomLevel = 1; updateZoom(); }
+    function updateZoom() { $(".flipbook").css("transform", `scale(${zoomLevel})`); }
+
+    function updateBookmarkButton(currentPage) {
+      const totalPages = $(".flipbook").turn("pages");
+      const isCoverPage = (currentPage === 1 || currentPage === 2 || currentPage === totalPages || currentPage === totalPages - 1);
+      
+      $("#bookmarkBtn").prop("disabled", isCoverPage);
+    }
+
+    function toggleBookmark() {
+      const currentPage = parseInt($("#pageInput").val());
+
+      if (!isNaN(currentPage)) {
+        if (localStorage.getItem(`bookmark-page-${currentPage}`)) {
+          localStorage.removeItem(`bookmark-page-${currentPage}`);
+          alert(`Bookmark removed from page ${currentPage}`);
+        } else {
+          localStorage.setItem(`bookmark-page-${currentPage}`, "bookmarked");
+          alert(`Page ${currentPage} bookmarked!`);
+        }
+      }
+    }
+  </script>
+
+</body>
 </html>
