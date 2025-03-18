@@ -9,7 +9,7 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     body {
-  background-image: url('images/minimal-geometric-abstract-backg.png');
+  background-image: url('images/background.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -39,13 +39,15 @@
   padding: 10px 18px; /* Uniform height and padding */
   border-radius: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 66, 66, 0.9);
+  background: #8CC950;
+
   height: 45px; /* Ensures all controls have the same height */
 }
 
 /* Bookmark Control with Different Color */
 .bookmark-control {
-  background: rgba(255, 66, 66, 0.9);
+  background: #8CC950;
+
 }
 
 /* Control Buttons */
@@ -99,30 +101,41 @@
 
 <body>
 
-  <div class="flipbook-container">
+<!-- Left Page Turn Button -->
+<button onclick="$('.flipbook').turn('previous');" 
+    style="position: fixed; top: 50%; left: 40px; transform: translateY(-50%); background: none; border: none; cursor: pointer; z-index: 1000;">
+    <img src="images/LeftArrow.png" alt="Previous Page" style="width: 80px; height: 80px;">
+</button>
+
+<div class="flipbook-container">
     <div class="flipbook">
-      <div class="hard">The Case of the Missing Smile</div>
-      <div class="hard"></div>
-      <div><img src="images/img-1.jpg" alt="Book Cover" /></div>
-      <div>
-        <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
-        <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
-      </div>
-      <div><small>After several minutes of searching, she found what she was looking for: a folder with the name ‘Sophia Sue Simmons’.</small></div>
-      <div><img src="images/img-3.jpg" alt="Detective Peterson finding the file" /></div>
-      <div><small>“Hmm,” Detective Peterson mumbled as she studied the file.</small></div>
-      <div><img src="images/img-4.jpg" alt="Detective Peterson studying the file" /></div>
-      <div><small>Sophia Sue always smiled, from morning till night. She never stopped smiling.</small></div>
-      <div><img src="images/img-5.jpg" alt="Sophia Sue smiling" /></div>
-      <div class="hard"></div>
-      <div class="hard">Thank You</div>
+        <div class="hard">The Case of the Missing Smile</div>
+        <div class="hard"></div>
+        <div><img src="images/img-1.jpg" alt="Book Cover" /></div>
+        <div>
+            <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
+            <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
+        </div>
+        <div><small>After several minutes of searching, she found what she was looking for: a folder with the name ‘Sophia Sue Simmons’.</small></div>
+        <div><img src="images/img-3.jpg" alt="Detective Peterson finding the file" /></div>
+        <div><small>“Hmm,” Detective Peterson mumbled as she studied the file.</small></div>
+        <div><img src="images/img-4.jpg" alt="Detective Peterson studying the file" /></div>
+        <div><small>Sophia Sue always smiled, from morning till night. She never stopped smiling.</small></div>
+        <div><img src="images/img-5.jpg" alt="Sophia Sue smiling" /></div>
+        <div class="hard"></div>
+        <div class="hard">Thank You</div>
     </div>
-  </div>
+</div>
+
+<!-- Right Page Turn Button -->
+<button onclick="$('.flipbook').turn('next');" 
+    style="position: fixed; top: 50%; right: 40px; transform: translateY(-50%); background: none; border: none; cursor: pointer; z-index: 1000;">
+    <img src="images/RightArrow.png" alt="Next Page" style="width: 80px; height: 80px;">
+</button>
+
 
   <!-- Controls Container -->
   <div class="controls-container">
-
-    <!-- Zoom Controls -->
     <div class="zoom-controls">
       <button class="control-button" onclick="zoomOut()" title="Zoom Out">
         <img src="images/zoom-out.png" alt="Zoom Out" class="control-icon">
@@ -134,24 +147,20 @@
         <img src="images/zoom-in.png" alt="Zoom In" class="control-icon">
       </button>
     </div>
-
-    <!-- Page Navigation Controls -->
     <div class="page-controls">
       <input type="text" id="pageInput" class="page-input" placeholder="1" />
       <span id="pageTotal">/ 1</span>
     </div>
-
-    <!-- Bookmark Control -->
     <div class="bookmark-control">
       <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
         <img src="images/star.png" alt="Bookmark" class="control-icon">
       </button>
     </div>
-
   </div>
 
   <script src="jquery.js"></script>
   <script src="turn.js"></script>
+
   <script>
     $(document).ready(function () {
       const flipbook = $(".flipbook");
@@ -217,4 +226,5 @@
   </script>
 
 </body>
+
 </html>
