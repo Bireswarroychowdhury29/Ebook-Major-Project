@@ -9,152 +9,466 @@
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     body {
-  background-image: url('images/background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  overflow: hidden;
-}
+      background-image: url('images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      overflow: hidden;
+      margin: 0; /* Added to remove default margin */
+      font-family: Arial, sans-serif;
+    }
 
-/* Controls Container */
-.controls-container {
-  position: fixed;
-  bottom: 30px; /* Increased gap for better spacing */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 15px; /* Consistent gap between controls */
-  z-index: 1000;
-  margin-top: 80px;
-}
+    /* Navigation Sidebar Styles */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1001;
+      top: 0;
+      left: 0;
+      background-color: #8CC950;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+    }
 
-/* Individual Control Groups */
-.zoom-controls,
-.page-controls,
-.bookmark-control {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 18px; /* Uniform height and padding */
-  border-radius: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background: #8CC950;
+    .sidebar.open {
+      width: 250px;
+    }
 
-  height: 45px; /* Ensures all controls have the same height */
-}
+    .sidebar a {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 18px;
+      color: white;
+      display: block;
+      transition: 0.3s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-/* Bookmark Control with Different Color */
-.bookmark-control {
-  background: #8CC950;
+    .sidebar a:hover {
+      background-color: #6BA33E;
+    }
 
-}
+    .sidebar a.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
 
-/* Control Buttons */
-.control-button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 35px; /* Same height for all buttons */
-  width: 35px;  /* Ensures square shape */
-}
+    .sidebar .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
 
-/* Icons Inside Buttons */
-.control-icon {
-  width: 22px;
-  height: 22px;
-  opacity: 0.8;
-  transition: transform 0.3s ease;
-}
+    .nav-toggle {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      z-index: 1002;
+      background: #8CC950;
+      border: none;
+      padding: 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
 
-.control-icon:hover {
-  opacity: 1;
-  transform: scale(1.2);
-}
+    .nav-toggle:hover {
+      background: #6BA33E;
+    }
 
-/* Page Input Field */
-.page-input {
-  width: 40px;
-  text-align: center;
-  border: none;
-  font-weight: bold;
-  font-size: 14px;
-  outline: none;
-  background: transparent;
-  color: black;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 5px;
-}
+    .sidebar-header {
+      color: white;
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
 
-/* Disabled Bookmark Button */
-.bookmark-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+    /* Content shift when sidebar is open */
+    .content {
+      transition: margin-left 0.5s;
+    }
 
+    .content.shifted {
+      margin-left: 250px;
+    }
+
+    /* Page turn buttons */
+    .page-turn-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+      transition: left 0.5s, right 0.5s;
+    }
+
+    .left-turn-btn {
+      left: 120px;
+    }
+
+    .left-turn-btn.shifted {
+      left: 370px; /* 120px + 250px sidebar width */
+    }
+
+    .right-turn-btn {
+      right: 120px;
+    }
+
+    /* Existing Styles */
+    .controls-container {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      z-index: 1000;
+      margin-top: 80px;
+      transition: left 0.5s;
+    }
+
+    .controls-container.shifted {
+      left: calc(50% + 125px); /* Adjust to center when sidebar is open */
+    }
+
+    .zoom-controls,
+    .page-controls,
+    .bookmark-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      border-radius: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      background: #8CC950;
+      height: 45px;
+    }
+
+    .bookmark-control {
+      background: #8CC950;
+    }
+
+    .control-button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 35px;
+      width: 35px;
+    }
+
+    .control-icon {
+      width: 22px;
+      height: 22px;
+      opacity: 0.8;
+      transition: transform 0.3s ease;
+    }
+
+    .control-icon:hover {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    .page-input {
+      width: 40px;
+      text-align: center;
+      border: none;
+      font-weight: bold;
+      font-size: 14px;
+      outline: none;
+      background: transparent;
+      color: black;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 5px;
+    }
+
+    .bookmark-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Flipbook container adjustments */
+    .flipbook-container {
+      transition: margin-left 0.5s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Bookmark Modal Styles */
+    .bookmark-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .bookmark-modal-content {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow: hidden;
+      position: relative;
+      animation: modalFadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .bookmark-modal-header {
+      background-color: #8CC950;
+      padding: 15px 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .bookmark-modal-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .bookmark-modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .bookmark-modal-close:hover {
+      transform: scale(1.2);
+    }
+
+    .bookmark-modal-body {
+      padding: 20px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .bookmark-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .bookmark-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      background-color: #f5f5f5;
+      transition: all 0.2s ease;
+    }
+
+    .bookmark-item:hover {
+      background-color: #e9e9e9;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .bookmark-item-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bookmark-icon {
+      color: #8CC950;
+      font-size: 18px;
+    }
+
+    .bookmark-page-number {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .bookmark-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .bookmark-goto {
+      background-color: #8CC950;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .bookmark-goto:hover {
+      background-color: #6BA33E;
+    }
+
+    .bookmark-remove {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .bookmark-remove:hover {
+      background-color: #e63939;
+    }
+
+    .no-bookmarks-message {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .bookmark-modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #e5e5e5;
+      text-align: right;
+    }
+
+    .bookmark-modal-footer button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #8CC950;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.2s ease;
+    }
+
+    .bookmark-modal-footer button:hover {
+      background-color: #6BA33E;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Navigation Toggle Button -->
+  <button class="nav-toggle" id="navToggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars" style="font-size: 20px; color: white;"></i>
+  </button>
 
-<!-- Left Page Turn Button -->
-<button onclick="$('.flipbook').turn('previous');" 
-    style="position: fixed; top: 50%; left: 40px; transform: translateY(-50%); background: none; border: none; cursor: pointer; z-index: 1000;">
-    <img src="images/LeftArrow.png" alt="Previous Page" style="width: 80px; height: 80px;">
-</button>
+  <!-- Navigation Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+    <div class="sidebar-header">Book Navigation</div>
+    <a href="#" onclick="goToPageNumber(1)"><i class="fas fa-home" style="margin-right: 10px;"></i>Cover Page</a>
+    <a href="#" onclick="goToPageNumber(3)"><i class="fas fa-book-open" style="margin-right: 10px;"></i>Start Reading</a>
+    <a href="#" id="sidebarBookmarkLink" onclick="toggleBookmark()"><i class="fas fa-bookmark" style="margin-right: 10px;"></i>Bookmark Current</a>
+    <a href="#" id="bookmarksMenu"><i class="fas fa-list" style="margin-right: 10px;"></i>View Bookmarks</a>
+    <a href="#" onclick="goToPageNumber($('.flipbook').turn('pages'))"><i class="fas fa-fast-forward" style="margin-right: 10px;"></i>Last Page</a>
+  </div>
 
-<div class="flipbook-container">
-    <div class="flipbook">
+  <!-- Content Container -->
+  <div class="content" id="content">
+    <!-- Left Page Turn Button -->
+    <button id="leftTurnBtn" onclick="$('.flipbook').turn('previous');" 
+        class="page-turn-btn left-turn-btn">
+        <img src="images/LeftArrow.png" alt="Previous Page" style="width: 120px; height: 120px;">
+    </button>
+
+    <div class="flipbook-container">
+      <div class="flipbook">
         <div class="hard">The Case of the Missing Smile</div>
         <div class="hard"></div>
         <div><img src="images/img-1.jpg" alt="Book Cover" /></div>
         <div>
-            <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
-            <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
+          <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
+          <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
         </div>
-        <div><small>After several minutes of searching, she found what she was looking for: a folder with the name ‘Sophia Sue Simmons’.</small></div>
+        <div><small>After several minutes of searching, she found what she was looking for: a folder with the name 'Sophia Sue Simmons'.</small></div>
         <div><img src="images/img-3.jpg" alt="Detective Peterson finding the file" /></div>
-        <div><small>“Hmm,” Detective Peterson mumbled as she studied the file.</small></div>
+        <div><small>"Hmm," Detective Peterson mumbled as she studied the file.</small></div>
         <div><img src="images/img-4.jpg" alt="Detective Peterson studying the file" /></div>
         <div><small>Sophia Sue always smiled, from morning till night. She never stopped smiling.</small></div>
         <div><img src="images/img-5.jpg" alt="Sophia Sue smiling" /></div>
         <div class="hard"></div>
         <div class="hard">Thank You</div>
+      </div>
     </div>
-</div>
 
-<!-- Right Page Turn Button -->
-<button onclick="$('.flipbook').turn('next');" 
-    style="position: fixed; top: 50%; right: 40px; transform: translateY(-50%); background: none; border: none; cursor: pointer; z-index: 1000;">
-    <img src="images/RightArrow.png" alt="Next Page" style="width: 80px; height: 80px;">
-</button>
+    <!-- Right Page Turn Button -->
+    <button id="rightTurnBtn" onclick="$('.flipbook').turn('next');" 
+        class="page-turn-btn right-turn-btn">
+        <img src="images/RightArrow.png" alt="Next Page" style="width: 120px; height: 120px;">
+    </button>
 
-
-  <!-- Controls Container -->
-  <div class="controls-container">
-    <div class="zoom-controls">
-      <button class="control-button" onclick="zoomOut()" title="Zoom Out">
-        <img src="images/zoom-out.png" alt="Zoom Out" class="control-icon">
-      </button>
-      <button class="control-button" onclick="resetZoom()" title="Reset Zoom">
-        <img src="images/reset.png" alt="Reset Zoom" class="control-icon">
-      </button>
-      <button class="control-button" onclick="zoomIn()" title="Zoom In">
-        <img src="images/zoom-in.png" alt="Zoom In" class="control-icon">
-      </button>
+    <!-- Controls Container -->
+    <div class="controls-container" id="controlsContainer">
+      <div class="zoom-controls">
+        <button class="control-button" onclick="zoomOut()" title="Zoom Out">
+          <img src="images/zoom-out.png" alt="Zoom Out" class="control-icon">
+        </button>
+        <button class="control-button" onclick="resetZoom()" title="Reset Zoom">
+          <img src="images/reset.png" alt="Reset Zoom" class="control-icon">
+        </button>
+        <button class="control-button" onclick="zoomIn()" title="Zoom In">
+          <img src="images/zoom-in.png" alt="Zoom In" class="control-icon">
+        </button>
+      </div>
+      <div class="page-controls">
+        <input type="text" id="pageInput" class="page-input" placeholder="1" />
+        <span id="pageTotal">/ 1</span>
+      </div>
+      <div class="bookmark-control">
+        <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
+          <img src="images/star.png" alt="Bookmark" class="control-icon">
+        </button>
+      </div>
     </div>
-    <div class="page-controls">
-      <input type="text" id="pageInput" class="page-input" placeholder="1" />
-      <span id="pageTotal">/ 1</span>
-    </div>
-    <div class="bookmark-control">
-      <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
-        <img src="images/star.png" alt="Bookmark" class="control-icon">
-      </button>
+  </div>
+
+  <!-- Bookmark Modal -->
+  <div class="bookmark-modal" id="bookmarkModal">
+    <div class="bookmark-modal-content">
+      <div class="bookmark-modal-header">
+        <h2 class="bookmark-modal-title">Your Bookmarks</h2>
+        <button class="bookmark-modal-close" onclick="closeBookmarkModal()">&times;</button>
+      </div>
+      <div class="bookmark-modal-body" id="bookmarkModalBody">
+        <!-- Bookmark list will be populated here -->
+      </div>
+      <div class="bookmark-modal-footer">
+        <button onclick="closeBookmarkModal()">Close</button>
+      </div>
     </div>
   </div>
 
@@ -179,11 +493,75 @@
           goToPage();
         }
       });
+
+      // Load and display bookmarks
+      $("#bookmarksMenu").click(function(e) {
+        e.preventDefault();
+        displayBookmarks();
+      });
+      
+      // Initialize bookmark button state
+      updateSidebarBookmarkState(1);
     });
+
+    function toggleSidebar() {
+      // Toggle sidebar class
+      document.getElementById("sidebar").classList.toggle("open");
+      
+      // Toggle content shift
+      document.getElementById("content").classList.toggle("shifted");
+      
+      // Toggle left turn button position
+      document.getElementById("leftTurnBtn").classList.toggle("shifted");
+      
+      // Toggle controls container position
+      document.getElementById("controlsContainer").classList.toggle("shifted");
+      
+      // Change the icon based on sidebar state
+      const navToggle = document.getElementById("navToggle");
+      if (document.getElementById("sidebar").classList.contains("open")) {
+        navToggle.innerHTML = '<i class="fas fa-times" style="font-size: 20px; color: white;"></i>';
+      } else {
+        navToggle.innerHTML = '<i class="fas fa-bars" style="font-size: 20px; color: white;"></i>';
+      }
+    }
+
+    function goToPageNumber(page) {
+      $(".flipbook").turn("page", page);
+      if (document.getElementById("sidebar").classList.contains("open")) {
+        toggleSidebar();
+      }
+      if (document.getElementById("bookmarkModal").style.display === "flex") {
+        closeBookmarkModal();
+      }
+    }
 
     function updatePageIndex(currentPage) {
       $("#pageInput").val(currentPage);
       updateBookmarkButton(currentPage);
+      updateSidebarBookmarkState(currentPage);
+    }
+
+    function updateSidebarBookmarkState(currentPage) {
+      const totalPages = $(".flipbook").turn("pages");
+      const isCoverPage = (currentPage === 1 || currentPage === 2 || currentPage === totalPages || currentPage === totalPages - 1);
+      
+      // Update sidebar bookmark link state
+      const sidebarBookmarkLink = document.getElementById("sidebarBookmarkLink");
+      if (isCoverPage) {
+        sidebarBookmarkLink.classList.add("disabled");
+        sidebarBookmarkLink.onclick = function(e) { 
+          e.preventDefault(); 
+          alert("Cannot bookmark cover pages"); 
+          return false; 
+        };
+      } else {
+        sidebarBookmarkLink.classList.remove("disabled");
+        sidebarBookmarkLink.onclick = function() { 
+          toggleBookmark(); 
+          return false; 
+        };
+      }
     }
 
     function goToPage() {
@@ -212,19 +590,149 @@
 
     function toggleBookmark() {
       const currentPage = parseInt($("#pageInput").val());
+      const totalPages = $(".flipbook").turn("pages");
+      const isCoverPage = (currentPage === 1 || currentPage === 2 || currentPage === totalPages || currentPage === totalPages - 1);
+      
+      if (isCoverPage) {
+        alert("Cannot bookmark cover pages");
+        return;
+      }
 
       if (!isNaN(currentPage)) {
         if (localStorage.getItem(`bookmark-page-${currentPage}`)) {
           localStorage.removeItem(`bookmark-page-${currentPage}`);
-          alert(`Bookmark removed from page ${currentPage}`);
+          
+          // Show a nicer notification
+          showNotification(`Bookmark removed from page ${currentPage}`);
         } else {
           localStorage.setItem(`bookmark-page-${currentPage}`, "bookmarked");
-          alert(`Page ${currentPage} bookmarked!`);
+          
+          // Show a nicer notification
+          showNotification(`Page ${currentPage} bookmarked!`);
         }
       }
     }
+
+    // Function to display bookmarks in a modal
+    function displayBookmarks() {
+      const bookmarkModalBody = document.getElementById("bookmarkModalBody");
+      bookmarkModalBody.innerHTML = "";
+      
+      let hasBookmarks = false;
+      let bookmarkHTML = '<ul class="bookmark-list">';
+      
+      // Check for bookmarks in localStorage
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith("bookmark-page-")) {
+          hasBookmarks = true;
+          const pageNum = key.replace("bookmark-page-", "");
+          bookmarkHTML += `
+            <li class="bookmark-item" id="bookmark-item-${pageNum}">
+              <div class="bookmark-item-info">
+                <i class="fas fa-bookmark bookmark-icon"></i>
+                <span class="bookmark-page-number">Page ${pageNum}</span>
+              </div>
+              <div class="bookmark-actions">
+                <button class="bookmark-goto" onclick="goToPageNumber(${pageNum})">Go to page</button>
+                <button class="bookmark-remove" onclick="removeBookmark(${pageNum})">Remove</button>
+              </div>
+            </li>
+          `;
+        }
+      }
+      
+      bookmarkHTML += '</ul>';
+      
+      if (!hasBookmarks) {
+        bookmarkModalBody.innerHTML = '<div class="no-bookmarks-message">You have no bookmarks yet. Add bookmarks by clicking the star icon in the bottom controls or "Bookmark Current" in the sidebar.</div>';
+      } else {
+        bookmarkModalBody.innerHTML = bookmarkHTML;
+      }
+      
+      // Show the modal
+      document.getElementById("bookmarkModal").style.display = "flex";
+    }
+
+    // Function to close the bookmark modal
+    function closeBookmarkModal() {
+      document.getElementById("bookmarkModal").style.display = "none";
+    }
+
+    // Function to remove a bookmark from the modal
+    function removeBookmark(pageNum) {
+      localStorage.removeItem(`bookmark-page-${pageNum}`);
+      
+      // Remove the bookmark item from the list with animation
+      const bookmarkItem = document.getElementById(`bookmark-item-${pageNum}`);
+      bookmarkItem.style.transition = "all 0.3s ease";
+      bookmarkItem.style.opacity = "0";
+      bookmarkItem.style.transform = "translateX(100px)";
+      
+      setTimeout(() => {
+        bookmarkItem.remove();
+        
+        // Check if there are any bookmarks left
+        const bookmarkList = document.querySelector(".bookmark-list");
+        if (bookmarkList && bookmarkList.children.length === 0) {
+          document.getElementById("bookmarkModalBody").innerHTML = '<div class="no-bookmarks-message">You have no bookmarks yet. Add bookmarks by clicking the star icon in the bottom controls or "Bookmark Current" in the sidebar.</div>';
+        }
+      }, 300);
+      
+      // Show notification
+      showNotification(`Bookmark removed from page ${pageNum}`);
+    }
+
+    // Function to show a notification
+    function showNotification(message) {
+      // Check if there's an existing notification
+      let notification = document.querySelector('.notification');
+      
+      if (notification) {
+        // If there's an existing notification, remove it
+        notification.remove();
+      }
+      
+      // Create a new notification
+      notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      notification.style.position = 'fixed';
+      notification.style.bottom = '100px';
+      notification.style.left = '50%';
+      notification.style.transform = 'translateX(-50%)';
+      notification.style.backgroundColor = '#8CC950';
+      notification.style.color = 'white';
+      notification.style.padding = '10px 20px';
+      notification.style.borderRadius = '5px';
+      notification.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.2)';
+      notification.style.zIndex = '2000';
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.3s ease';
+      
+      document.body.appendChild(notification);
+      
+      // Fade in
+      setTimeout(() => {
+        notification.style.opacity = '1';
+      }, 10);
+      
+      // Fade out after 3 seconds
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    // Close the modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById("bookmarkModal");
+      if (event.target === modal) {
+        closeBookmarkModal();
+      }
+    }
   </script>
-
 </body>
-
 </html>
