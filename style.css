@@ -17,15 +17,18 @@ body {
 }
 
 .flipbook {
-    width: 1000px;
-    height: 600px;
+    margin: 0 auto;
+  max-width: 90%;
+  max-height: 80vh;
+  box-shadow: none;
 }
 
 .flipbook .hard {
     background: #8CC950 !important;
     color: #fff;
-    font-weight: bold;
-    border: none; 
+    font-weight: bold; 
+    border: none; /* Add this line */
+  box-shadow: none; /* Add this line */
 }
 
 .flipbook .hard small{
