@@ -1,0 +1,83 @@
+/* Navigation Sidebar Styles */
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    background-color: #8CC950;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar.open {
+    width: 250px;
+}
+
+.sidebar a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar a:hover {
+    background-color: #6BA33E;
+}
+
+.sidebar a.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.sidebar .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+
+.nav-toggle {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    z-index: 1002;
+    background: #8CC950;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.nav-toggle:hover {
+    background: #6BA33E;
+}
+
+.nav-toggle i {
+    font-size: 20px;
+    color: white;
+}
+
+.sidebar-header {
+    color: white;
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+}
