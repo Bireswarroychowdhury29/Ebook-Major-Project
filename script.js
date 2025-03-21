@@ -8,11 +8,15 @@ $(document).ready(function () {
   });
   
   const totalPages = flipbook.turn("pages");
-  $("#pageTotal").text(`/ ${totalPages}`);
+  $("#pageTotal").text(` / ${totalPages}`);
+  
+  // Initial adjustment for first page
   updatePageIndex(1);
+  adjustFlipbookPosition(1);
 
   flipbook.bind("turning", function (event, page) {
     updatePageIndex(page);
+    adjustFlipbookPosition(page);
   });
 
   $("#pageInput").keypress(function (event) {
@@ -36,7 +40,83 @@ $(document).ready(function () {
   $(window).on('resize', function() {
     updatePageTurnButtonPositions();
   });
+  
+  // Initialize static controls
+  initializeStaticControls();
 });
+
+// Function to create static controls that won't be affected by zoom
+function initializeStaticControls() {
+  // Get the controls container
+  const controlsContainer = $("#controlsContainer");
+  
+  // Remove the controls container from its current position in the DOM
+  controlsContainer.detach();
+  
+  // Create a new wrapper for controls that will stay fixed
+  const staticWrapper = $('<div id="staticControlsWrapper"></div>');
+  staticWrapper.css({
+    'position': 'fixed',
+    'bottom': '10px',
+    'left': '50%',
+    'transform': 'translateX(calc(-50% - 25px))', // Added negative offset to shift left
+    'z-index': '9999',
+    'display': 'flex',
+    'flex-direction': 'column',
+    'align-items': 'center',
+    'pointer-events': 'auto'
+  });
+  
+  // Append the controls to this wrapper
+  staticWrapper.append(controlsContainer);
+  
+  // Make sure the controls themselves have proper centering styles
+  controlsContainer.css({
+    'transform': 'none',
+    'position': 'relative',
+    'left': '0',
+    'bottom': '0',
+    'margin': '0',
+    'width': 'fit-content'
+  });
+  
+  // Add the wrapper to the body
+  $('body').append(staticWrapper);
+}
+
+// Function to adjust the flipbook position based on current page
+function adjustFlipbookPosition(page) {
+  const totalPages = $(".flipbook").turn("pages");
+  
+  // Apply position adjustment to container instead of flipbook
+  const container = $(".flipbook-container");
+  
+  // Add transition for smooth movement
+  container.css({
+    'transition': 'transform 0.3s ease-in-out'
+  });
+  
+  // Check if we're on first page (cover) or last page
+  if (page === 1 || page === totalPages) {
+    // Shift container to center the single page
+    const translateX = page === 1 ? -24 : 21;
+    updateContainerPosition(translateX);
+  } else {
+    // Reset to center for two-page spreads
+    updateContainerPosition(0);
+  }
+  
+  // Update page turn buttons after position change
+  updatePageTurnButtonPositions();
+}
+
+// New function to update container position and zoom together
+function updateContainerPosition(translateXPercent) {
+  const container = $(".flipbook-container");
+  container.css({
+    'transform': `translateX(${translateXPercent}%) scale(${zoomLevel})`
+  });
+}
 
 // Function to update page turn button positions
 function updatePageTurnButtonPositions() {
@@ -47,20 +127,23 @@ function updatePageTurnButtonPositions() {
   
   if (flipbookContainer && flipbook) {
     const containerRect = flipbookContainer.getBoundingClientRect();
-    const bookRect = flipbook.getBoundingClientRect();
     
     // Set left button position
     if (leftBtn) {
       if (document.getElementById("sidebar").classList.contains("open")) {
-        leftBtn.style.left = `${270}px`;
+        leftBtn.style.left = `${270 * zoomLevel}px`;
       } else {
-        leftBtn.style.left = `${20}px`;
+        leftBtn.style.left = `${20 * zoomLevel}px`;
       }
+      // Add smooth transition
+      leftBtn.style.transition = 'left 0.3s ease-in-out';
     }
     
     // Set right button position
     if (rightBtn) {
-      rightBtn.style.right = `${20}px`;
+      rightBtn.style.right = `${20 * zoomLevel}px`;
+      // Add smooth transition
+      rightBtn.style.transition = 'right 0.3s ease-in-out';
     }
   }
 }
@@ -74,9 +157,6 @@ function toggleSidebar() {
   
   // Toggle left turn button position
   document.getElementById("leftTurnBtn").classList.toggle("shifted");
-  
-  // Toggle controls container position
-  document.getElementById("controlsContainer").classList.toggle("shifted");
   
   // Update page turn button positions
   updatePageTurnButtonPositions();
@@ -140,10 +220,47 @@ function goToPage() {
 }
 
 let zoomLevel = 1;
-function zoomIn() { if (zoomLevel < 2) { zoomLevel += 0.2; updateZoom(); } }
-function zoomOut() { if (zoomLevel > 1) { zoomLevel -= 0.2; updateZoom(); } }
-function resetZoom() { zoomLevel = 1; updateZoom(); }
-function updateZoom() { $(".flipbook").css("transform", `scale(${zoomLevel})`); }
+
+function zoomIn() { 
+  if (zoomLevel < 2) { 
+    zoomLevel += 0.2; 
+    updateZoom(); 
+  } 
+}
+
+function zoomOut() { 
+  if (zoomLevel > 0.6) { 
+    zoomLevel -= 0.2; 
+    updateZoom(); 
+  } 
+}
+
+function resetZoom() { 
+  zoomLevel = 1; 
+  updateZoom(); 
+}
+
+function updateZoom() {
+  // Get current page for position adjustment
+  const currentPage = parseInt($("#pageInput").val());
+  const totalPages = $(".flipbook").turn("pages");
+  
+  let translateX = 0;
+  if (currentPage === 1) {
+    translateX = -25;
+  } else if (currentPage === totalPages) {
+    translateX = 25;
+  }
+  
+  // Apply zoom to container instead of flipbook
+  updateContainerPosition(translateX);
+  
+  // Update buttons position after zoom
+  updatePageTurnButtonPositions();
+  
+  // Controls are now handled by the static wrapper
+  // No need to modify them here
+}
 
 function updateBookmarkButton(currentPage) {
   const totalPages = $(".flipbook").turn("pages");

@@ -12,6 +12,7 @@
 </head>
 
 <body>
+
   <!-- Navigation Toggle Button -->
   <button class="nav-toggle" id="navToggle" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
@@ -32,7 +33,7 @@
   <div class="content" id="content">
     <!-- Left Page Turn Button -->
     <button id="leftTurnBtn" onclick="$('.flipbook').turn('previous');" class="page-turn-btn left-turn-btn">
-      <img src="images/LeftArrow.png" alt="Previous Page">
+      <img src="images/LeftArrow.png" alt="Previous Page" class="left-arrow-icon">
     </button>
 
     <div class="flipbook-container">
@@ -57,7 +58,7 @@
 
     <!-- Right Page Turn Button -->
     <button id="rightTurnBtn" onclick="$('.flipbook').turn('next');" class="page-turn-btn right-turn-btn">
-      <img src="images/RightArrow.png" alt="Next Page">
+      <img src="images/RightArrow.png" alt="Next Page" class="right-arrow-icon">
     </button>
 
     <!-- Controls Container -->
@@ -75,7 +76,7 @@
       </div>
       <div class="page-controls">
         <input type="text" id="pageInput" class="page-input" placeholder="1" />
-        <span id="pageTotal">/ 1</span>
+        <span id="pageTotal" class="page-total">1</span>
       </div>
       <div class="bookmark-control">
         <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
