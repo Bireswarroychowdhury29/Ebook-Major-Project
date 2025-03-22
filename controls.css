@@ -1,35 +1,42 @@
-/* Page turn buttons */
-.page-turn-btn {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 1001;
-    transition: left 0.35s, right 0.5s, filter 0.35s ease-in-out, transform 0.35s ease-in-out;
+/* Page turn buttons with faster transitions */
+.page-turn-btn, 
+#leftTurnBtn, 
+#rightTurnBtn {
+    position: fixed !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    z-index: 1001 !important;
+    /* Adjusted to be noticeably faster */
+    transition: left 0.35s, right 0.5s, filter 0.4s ease-in-out, transform 0.4s ease-in-out !important;
 }
 
-.page-turn-btn:hover {
-    filter: drop-shadow(0 0 10px rgba(140, 201, 80, 0.85)) brightness(1.2);
-    transform: translateY(-50%) scale(1.1);
+.page-turn-btn:hover,
+#leftTurnBtn:hover,
+#rightTurnBtn:hover {
+    filter: drop-shadow(0 0 10px rgba(140, 201, 80, 0.85)) brightness(1.2) !important;
+    transform: translateY(-50%) scale(1.08) !important;
 }
 
-.page-turn-btn img {
-    width: 80px;
-    height: 80px;
+.page-turn-btn img,
+#leftTurnBtn img,
+#rightTurnBtn img {
+    width: 80px !important;
+    height: 80px !important;
 }
 
 .left-turn-btn {
-    left: 20px;
+    left: 20px !important;
 }
 
 .left-turn-btn.shifted {
-    left: 270px; /* 20px + 250px sidebar width */
+    left: 270px !important; /* 20px + 250px sidebar width */
 }
 
 .right-turn-btn {
-    right: 20px;
+    right: 20px !important;
 }
 
 /* Controls Container */
