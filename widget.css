@@ -1,0 +1,79 @@
+.floating-widget {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100; /* Increased z-index to ensure it's above other elements */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.floating-widget #aiWidgetIcon {
+    width: 50px;  
+    height: 50px; 
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    position: relative;
+    background-color: white; /* Added background color to make it more visible */
+}
+
+.floating-widget #aiWidgetIcon:hover {
+    transform: scale(1.1);
+}
+
+.floating-widget #aiWidgetIcon::before {
+    content: "Helper Bot";
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 1200; /* Ensure tooltip is above other elements */
+}
+
+.floating-widget #aiWidgetIcon:hover::before {
+    opacity: 1;
+}
+
+.floating-widget .helper-bot-label {
+    margin-top: 10px;
+    font-size: 12px;
+    color: white; /* Changed to white to be visible on dark background */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Added text shadow for better readability */
+}
+
+.widget-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 10px;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1100; /* Ensure menu is above background */
+}
+
+.widget-menu button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.widget-menu button:hover {
+    background-color: #e0e0e0;
+}
