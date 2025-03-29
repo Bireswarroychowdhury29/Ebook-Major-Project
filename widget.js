@@ -18,120 +18,397 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Add event listeners to menu items
-    const speechBtn = document.getElementById("speechBtn");
-    const dictionaryBtn = document.getElementById("dictionaryBtn");
+    // Add event listeners to menu items based on existing HTML structure
+    const textToSpeechBtn = document.querySelector("#aiWidgetMenu button:nth-child(1)");
+    const dictionaryBtn = document.querySelector("#aiWidgetMenu button:nth-child(2)");
 
-    if (speechBtn) {
-        speechBtn.addEventListener("click", textToSpeech);
+    if (textToSpeechBtn) {
+        textToSpeechBtn.addEventListener("click", textToSpeech);
     } else {
-        console.error("Speech button not found! Make sure you have a button with id 'speechBtn'");
+        console.error("Text-to-speech button not found!");
     }
 
     if (dictionaryBtn) {
         dictionaryBtn.addEventListener("click", dictionaryLookup);
     } else {
-        console.error("Dictionary button not found! Make sure you have a button with id 'dictionaryBtn'");
+        console.error("Dictionary button not found!");
     }
 });
 
 // Function for Text-to-Speech
 function textToSpeech() {
     console.log("Text-to-speech function called");
-    const text = prompt("Enter text for speech:");
-    if (!text) return;
 
-    console.log("Speaking text:", text);
-    const utterance = new SpeechSynthesisUtterance(text);
-    speechSynthesis.speak(utterance);
+    // Create popup
+    const popup = document.createElement("div");
+    popup.id = "aiWidgetPopup";
+
+    const content = document.createElement("div");
+    content.className = "ai-popup-content";
+
+    // Stop click events from bubbling up (Prevents unwanted closing)
+    content.addEventListener("click", (e) => e.stopPropagation());
+
+    // Header
+    const header = document.createElement("div");
+    header.className = "ai-popup-header";
+
+    const title = document.createElement("h2");
+    title.className = "ai-popup-title";
+    title.innerHTML = '<i class="fas fa-volume-up"></i> Text-to-Speech';
+
+    header.appendChild(title);
+
+    // Body
+    const body = document.createElement("div");
+    body.className = "ai-popup-body";
+
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "ai-input-group";
+
+    const label = document.createElement("label");
+    label.className = "ai-input-label";
+    label.textContent = "Enter text to be read aloud:";
+
+    const textarea = document.createElement("textarea");
+    textarea.className = "ai-input-field";
+    textarea.rows = 4;
+    textarea.placeholder = "Type or paste the text here...";
+
+    // Stop clicks inside the textarea from bubbling up
+    textarea.addEventListener("click", (e) => e.stopPropagation());
+
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(textarea);
+
+    const ttsControls = document.createElement("div");
+    ttsControls.className = "tts-controls";
+    ttsControls.style.display = "none";
+
+    const ttsPreview = document.createElement("div");
+    ttsPreview.className = "tts-preview";
+
+    let utterance = null;
+
+    const playBtn = document.createElement("button");
+    playBtn.className = "tts-play-btn";
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+
+    playBtn.addEventListener("click", function() {
+        const text = textarea.value.trim();
+        if (text) {
+            // Set text to preview
+            ttsPreview.textContent = text;
+            ttsControls.style.display = "flex";
+
+            // Stop any existing speech
+            speechSynthesis.cancel();
+
+            // Create a new utterance
+            utterance = new SpeechSynthesisUtterance(text);
+
+            // Speak the text
+            speechSynthesis.speak(utterance);
+
+            // Toggle button icon
+            this.innerHTML = '<i class="fas fa-volume-up"></i>';
+            utterance.onend = () => {
+                this.innerHTML = '<i class="fas fa-play"></i>';
+            };
+        }
+    });
+
+    ttsControls.appendChild(ttsPreview);
+    ttsControls.appendChild(playBtn);
+
+    body.appendChild(inputGroup);
+    body.appendChild(ttsControls);
+
+    // Footer
+    const footer = document.createElement("div");
+    footer.className = "ai-popup-footer";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "ai-btn ai-btn-cancel";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.addEventListener("click", () => {
+        speechSynthesis.cancel(); // Stop any ongoing speech immediately
+        document.body.removeChild(popup);
+    });
+
+    const speakBtn = document.createElement("button");
+    speakBtn.className = "ai-btn ai-btn-primary";
+    speakBtn.innerHTML = '<span>Speak</span>';
+
+    speakBtn.addEventListener("click", function() {
+        const text = textarea.value.trim();
+        if (!text) return;
+
+        // Show preview
+        ttsPreview.textContent = text;
+        ttsControls.style.display = "flex";
+
+        // Stop any existing speech
+        speechSynthesis.cancel();
+
+        // Speak the text
+        utterance = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(utterance);
+    });
+
+    footer.appendChild(cancelBtn);
+    footer.appendChild(speakBtn);
+
+    // Assemble popup
+    content.appendChild(header);
+    content.appendChild(body);
+    content.appendChild(footer);
+    popup.appendChild(content);
+
+    // Add to document
+    document.body.appendChild(popup);
+    console.log("Enhanced TTS popup added to document");
+
+    // Fix: Close popup ONLY if clicking outside the popup content
+    popup.addEventListener("click", function(e) {
+        speechSynthesis.cancel();
+        document.body.removeChild(popup);
+    });
+
+    // Focus the textarea
+    setTimeout(() => textarea.focus(), 100);
 }
+
 
 // Function for Dictionary Lookup
 async function dictionaryLookup() {
     console.log("Dictionary lookup function called");
-    const word = prompt("Enter a word to define:");
-    if (!word) return;
+    
+    // Create enhanced popup
+    const popup = document.createElement("div");
+    popup.id = "aiWidgetPopup";
 
-    try {
-        console.log("Looking up word:", word);
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        
-        if (!response.ok) {
-            throw new Error(`Dictionary API responded with status ${response.status}`);
-        }
-        
-        const result = await response.json();
+    const content = document.createElement("div");
+    content.className = "ai-popup-content";
 
-        if (Array.isArray(result) && result.length > 0 && result[0].meanings) {
-            console.log("Definition found");
-            showPopup(`Definition of "${word}"`, result[0].meanings[0].definitions[0].definition);
-        } else {
-            console.log("No definition found");
-            showPopup("Not Found", "No definition found for this word.");
+    // Header
+    const header = document.createElement("div");
+    header.className = "ai-popup-header";
+    
+    const title = document.createElement("h2");
+    title.className = "ai-popup-title";
+    title.innerHTML = '<i class="fas fa-book"></i> Dictionary Lookup';
+    
+    header.appendChild(title);
+
+    // Body
+    const body = document.createElement("div");
+    body.className = "ai-popup-body";
+    
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "ai-input-group";
+    
+    const label = document.createElement("label");
+    label.className = "ai-input-label";
+    label.textContent = "Enter a word to look up:";
+    
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "ai-input-field";
+    input.placeholder = "Type a word...";
+    
+    inputGroup.appendChild(label);
+    inputGroup.appendChild(input);
+    
+    const resultDiv = document.createElement("div");
+    resultDiv.className = "dictionary-result";
+    resultDiv.style.display = "none";
+    
+    body.appendChild(inputGroup);
+    body.appendChild(resultDiv);
+
+    // Footer
+    const footer = document.createElement("div");
+    footer.className = "ai-popup-footer";
+    
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "ai-btn ai-btn-cancel";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.addEventListener("click", () => document.body.removeChild(popup));
+    
+    const lookupBtn = document.createElement("button");
+    lookupBtn.className = "ai-btn ai-btn-primary";
+    lookupBtn.textContent = "Look Up";
+    lookupBtn.addEventListener("click", async function() {
+        const word = input.value.trim();
+        if (!word) return;
+        
+        // Show loading state
+        this.innerHTML = '<span class="loading-spinner"></span>';
+        this.disabled = true;
+        
+        try {
+            console.log("Looking up word:", word);
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            
+            if (!response.ok) {
+                throw new Error(`Dictionary API responded with status ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            // Reset button state
+            this.innerHTML = 'Look Up';
+            this.disabled = false;
+            
+            if (Array.isArray(result) && result.length > 0 && result[0].meanings) {
+                console.log("Definition found");
+                
+                // Clear previous results
+                resultDiv.innerHTML = '';
+                
+                // Add word header
+                const wordHeader = document.createElement("div");
+                wordHeader.className = "word-header";
+                
+                const wordTitle = document.createElement("div");
+                wordTitle.className = "word-title";
+                wordTitle.textContent = word;
+                
+                const phonetic = document.createElement("div");
+                phonetic.className = "phonetic";
+                phonetic.textContent = result[0].phonetic || "";
+                
+                wordHeader.appendChild(wordTitle);
+                wordHeader.appendChild(phonetic);
+                resultDiv.appendChild(wordHeader);
+                
+                // Add meanings
+                result[0].meanings.forEach(meaning => {
+                    const meaningSection = document.createElement("div");
+                    meaningSection.className = "meaning-section";
+                    
+                    const partOfSpeech = document.createElement("div");
+                    partOfSpeech.className = "part-of-speech";
+                    partOfSpeech.textContent = meaning.partOfSpeech;
+                    meaningSection.appendChild(partOfSpeech);
+                    
+                    // Add definitions (limit to first 2 for cleanliness)
+                    const definitions = meaning.definitions.slice(0, 2);
+                    definitions.forEach(def => {
+                        const definition = document.createElement("div");
+                        definition.className = "definition";
+                        definition.textContent = def.definition;
+                        meaningSection.appendChild(definition);
+                        
+                        if (def.example) {
+                            const example = document.createElement("div");
+                            example.className = "example";
+                            example.textContent = `"${def.example}"`;
+                            meaningSection.appendChild(example);
+                        }
+                    });
+                    
+                    resultDiv.appendChild(meaningSection);
+                });
+                
+                resultDiv.style.display = "block";
+            } else {
+                console.log("No definition found");
+                resultDiv.innerHTML = '<div class="definition">No definition found for this word.</div>';
+                resultDiv.style.display = "block";
+            }
+        } catch (error) {
+            console.error("Error in dictionary lookup:", error);
+            
+            // Reset button state
+            this.innerHTML = 'Look Up';
+            this.disabled = false;
+            
+            resultDiv.innerHTML = `<div class="definition">Error fetching definition: ${error.message}</div>`;
+            resultDiv.style.display = "block";
         }
-    } catch (error) {
-        console.error("Error in dictionary lookup:", error);
-        showPopup("Error", "Error fetching definition: " + error.message);
-    }
+    });
+    
+    // Add Enter key support
+    input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            lookupBtn.click();
+        }
+    });
+    
+    footer.appendChild(cancelBtn);
+    footer.appendChild(lookupBtn);
+
+    // Assemble popup
+    content.appendChild(header);
+    content.appendChild(body);
+    content.appendChild(footer);
+    popup.appendChild(content);
+
+    // Add to document
+    document.body.appendChild(popup);
+    console.log("Enhanced dictionary popup added to document");
+
+    // Close on clicking outside
+    popup.addEventListener("click", function(e) {
+        if (e.target === popup) {
+            document.body.removeChild(popup);
+        }
+    });
+    
+    // Focus the input
+    setTimeout(() => input.focus(), 100);
 }
 
-// Function to show a styled popup instead of alert
+// Keeping the original showPopup function for backward compatibility
 function showPopup(title, content) {
     console.log("Showing popup:", title);
     try {
         // Create popup container
         const popup = document.createElement("div");
         popup.id = "aiWidgetPopup";
-        popup.style.position = "fixed";
-        popup.style.top = "0";
-        popup.style.left = "0";
-        popup.style.width = "100%";
-        popup.style.height = "100%";
-        popup.style.backgroundColor = "rgba(0,0,0,0.5)";
-        popup.style.display = "flex";
-        popup.style.justifyContent = "center";
-        popup.style.alignItems = "center";
-        popup.style.zIndex = "1000";
 
         // Create popup content
         const popupContent = document.createElement("div");
-        popupContent.style.backgroundColor = "white";
-        popupContent.style.padding = "20px";
-        popupContent.style.borderRadius = "5px";
-        popupContent.style.maxWidth = "80%";
-        popupContent.style.maxHeight = "80%";
-        popupContent.style.overflow = "auto";
-        popupContent.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
-
-        // Create title
+        popupContent.className = "ai-popup-content";
+        
+        // Create header
+        const header = document.createElement("div");
+        header.className = "ai-popup-header";
+        
         const titleElement = document.createElement("h2");
+        titleElement.className = "ai-popup-title";
         titleElement.textContent = title;
-        titleElement.style.marginTop = "0";
-        titleElement.style.borderBottom = "1px solid #eee";
-        titleElement.style.paddingBottom = "10px";
-
-        // Create content
+        
+        header.appendChild(titleElement);
+        
+        // Create body
+        const body = document.createElement("div");
+        body.className = "ai-popup-body";
+        
         const contentElement = document.createElement("div");
         contentElement.innerHTML = content.replace(/\n/g, "<br>");
-        contentElement.style.margin = "15px 0";
-
-        // Create close button
+        
+        body.appendChild(contentElement);
+        
+        // Create footer
+        const footer = document.createElement("div");
+        footer.className = "ai-popup-footer";
+        
         const closeButton = document.createElement("button");
         closeButton.textContent = "Close";
-        closeButton.style.padding = "8px 16px";
-        closeButton.style.backgroundColor = "#3498db";
-        closeButton.style.color = "white";
-        closeButton.style.border = "none";
-        closeButton.style.borderRadius = "4px";
-        closeButton.style.cursor = "pointer";
+        closeButton.className = "ai-btn ai-btn-primary";
         closeButton.addEventListener("click", function() {
             document.body.removeChild(popup);
         });
+        
+        footer.appendChild(closeButton);
 
         // Assemble popup
-        popupContent.appendChild(titleElement);
-        popupContent.appendChild(contentElement);
-        popupContent.appendChild(closeButton);
+        popupContent.appendChild(header);
+        popupContent.appendChild(body);
+        popupContent.appendChild(footer);
         popup.appendChild(popupContent);
 
         // Add to document
