@@ -1,127 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="controls.css" />
-  <link rel="stylesheet" href="sidebar.css" />
-  <link rel="stylesheet" href="modal.css" />
-  <link rel="stylesheet" href="widget.css" />
-  <title>The Case of the Missing Smile</title>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Bookshelf</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="library.css">
 </head>
-
 <body>
-
-  <!-- Navigation Toggle Button -->
-  <button class="nav-toggle" id="navToggle" onclick="toggleSidebar()">
-    <i class="fas fa-bars"></i>
-  </button>
-
-  <!-- Navigation Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <span class="close-btn" onclick="toggleSidebar()">&times;</span>
-    <div class="sidebar-header">The Case of the Missing Smile</div>
-    <a href="#" onclick="goToPageNumber(1)"><i class="fas fa-home"></i>Cover Page</a>
-    <a href="#" onclick="goToPageNumber(3)"><i class="fas fa-book-open"></i>Start Reading</a>
-    <a href="#" id="sidebarBookmarkLink" onclick="toggleBookmark()"><i class="fas fa-bookmark"></i>Bookmark Current</a>
-    <a href="#" id="bookmarksMenu"><i class="fas fa-list"></i>View Bookmarks</a>
-    <a href="#" onclick="goToPageNumber($('.flipbook').turn('pages'))"><i class="fas fa-fast-forward"></i>Last Page</a>
-  </div>
-
-  <!-- Content Container -->
-  <div class="content" id="content">
-    <!-- Left Page Turn Button -->
-    <button id="leftTurnBtn" onclick="$('.flipbook').turn('previous');" class="page-turn-btn left-turn-btn">
-      <img src="images/LeftArrow.png" alt="Previous Page" class="left-arrow-icon">
-    </button>
-
-    <div class="flipbook-container">
-      <div class="flipbook">
-        <div class="hard">The Case of the Missing Smile</div>
-        <div class="hard"></div>
-        <div><img src="images/img-1.jpg" alt="Book Cover" /></div>
-        <div>
-          <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
-          <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
-        </div>
-        <div><small>After several minutes of searching, she found what she was looking for: a folder with the name 'Sophia Sue Simmons'.</small></div>
-        <div><img src="images/img-3.jpg" alt="Detective Peterson finding the file" /></div>
-        <div><small>"Hmm," Detective Peterson mumbled as she studied the file.</small></div>
-        <div><img src="images/img-4.jpg" alt="Detective Peterson studying the file" /></div>
-        <div><small>Sophia Sue always smiled, from morning till night. She never stopped smiling.</small></div>
-        <div><img src="images/img-5.jpg" alt="Sophia Sue smiling" /></div>
-        <div class="hard"></div>
-        <div class="hard">Thank You</div>
+  <div class="container">
+    <header>
+      <h1>Digital Bookshelf</h1>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by title, author, or genre...">
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
       </div>
+    </header>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All Books</button>
+      <button class="filter-btn" data-filter="fiction">Fiction</button>
+      <button class="filter-btn" data-filter="non-fiction">Non-Fiction</button>
+      <button class="filter-btn" data-filter="children">Children's</button>
+      <button class="filter-btn" data-filter="mystery">Mystery</button>
+      <button class="filter-btn" data-filter="science">Science</button>
     </div>
 
-    <!-- Right Page Turn Button -->
-    <button id="rightTurnBtn" onclick="$('.flipbook').turn('next');" class="page-turn-btn right-turn-btn">
-      <img src="images/RightArrow.png" alt="Next Page" class="right-arrow-icon">
-    </button>
+    <div class="books-grid" id="booksGrid">
+      <!-- Books will be populated here by JavaScript -->
+    </div>
 
-    <!-- Controls Container -->
-    <div class="controls-container" id="controlsContainer">
-      <div class="zoom-controls">
-        <button class="control-button" onclick="zoomOut()" title="Zoom Out">
-          <img src="images/zoom-out.png" alt="Zoom Out" class="control-icon">
-        </button>
-        <button class="control-button" onclick="resetZoom()" title="Reset Zoom">
-          <img src="images/reset.png" alt="Reset Zoom" class="control-icon">
-        </button>
-        <button class="control-button" onclick="zoomIn()" title="Zoom In">
-          <img src="images/zoom-in.png" alt="Zoom In" class="control-icon">
-        </button>
-      </div>
-      <div class="page-controls">
-        <input type="text" id="pageInput" class="page-input" placeholder="1" />
-        <span id="pageTotal" class="page-total">1</span>
-      </div>
-      <div class="bookmark-control">
-        <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
-          <img src="images/star.png" alt="Bookmark" class="control-icon">
-        </button>
-      </div>
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <p>Loading books...</p>
+    </div>
+
+    <div class="error-message" id="errorMessage">
+      <p>Oops! Something went wrong while fetching the books. Please try again later.</p>
+    </div>
+
+    <div class="empty-state" id="emptyState">
+      <i class="fas fa-book-open"></i>
+      <p>No books found matching your criteria</p>
     </div>
   </div>
 
-  <!-- Bookmark Modal -->
-  <div class="bookmark-modal" id="bookmarkModal">
-    <div class="bookmark-modal-content">
-      <div class="bookmark-modal-header">
-        <h2 class="bookmark-modal-title">Your Bookmarks</h2>
-        <button class="bookmark-modal-close" onclick="closeBookmarkModal()">&times;</button>
-      </div>
-      <div class="bookmark-modal-body" id="bookmarkModalBody">
-        <!-- Bookmark list will be populated here -->
-      </div>
-      <div class="bookmark-modal-footer">
-        <button onclick="closeBookmarkModal()">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="jquery.js"></script>
-  <script src="turn.js"></script>
-  <script src="script.js"></script>
-<!-- Floating AI Widget -->
-<div id="aiWidget" class="floating-widget">
-  <img src="images/bot.png" alt="AI Widget" id="aiWidgetIcon">
-  <div class="helper-bot-label">Helper Bot</div>
-  <div id="aiWidgetMenu" class="widget-menu">
-      <button onclick="textToSpeech()">
-        <img src="images/sound-wave.png" alt="" style="width: 16px; height: 16px; margin-right: 5px;">
-        Text-to-Speech
-      </button>
-      <button onclick="dictionaryLookup()">
-        <img src="images/dictionary.png" alt="" style="width: 16px; height: 16px; margin-right: 5px;">
-        Dictionary
-      </button>
-  </div>
-</div>
-  <script src="config.js"></script>
-  <script src="widget.js"></script>
+  <script src="library.js"></script>
 </body>
 </html>

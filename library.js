@@ -112,8 +112,7 @@ function filterAndDisplayBooks() {
 
 // Open the book viewer for the selected book
 function openBookViewer(book) {
-  // Navigate to the existing index.html with the book ID as a parameter
-  window.location.href = `index.html?bookId=${book._id}`;
+  window.location.href = `book-viewer.html?bookId=${book._id}`;
 }
 
 // UI Helper Functions
