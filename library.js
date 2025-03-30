@@ -51,7 +51,7 @@ async function fetchBooks() {
   }
 }
 
-// Display books in the grid
+// Display books in the grid with animations
 function displayBooks(books) {
   booksGrid.innerHTML = '';
 
@@ -60,7 +60,7 @@ function displayBooks(books) {
     return;
   }
 
-  books.forEach(book => {
+  books.forEach((book, index) => {
     const bookCard = document.createElement('div');
     bookCard.className = 'book-card';
     bookCard.dataset.id = book._id;
@@ -73,8 +73,8 @@ function displayBooks(books) {
         <img src="${book.coverImage || 'images/default-cover.jpg'}" alt="${book.title}">
       </div>
       <div class="book-info">
-        <div class="book-title">${book.title}</div>
-        <div class="book-author">by ${book.author}</div>
+        <h3 class="book-title">${book.title}</h3>
+        <p class="book-author">by ${book.author}</p>
         <div class="book-meta">
           <span class="book-genre">${book.genre}</span>
           <span class="book-rating">
@@ -107,7 +107,18 @@ function filterAndDisplayBooks() {
     );
   }
 
-  displayBooks(filteredBooks);
+  // Add transition effect when filtering
+  const existingBooks = document.querySelectorAll('.book-card');
+  existingBooks.forEach((book) => {
+    book.style.transition = 'all 0.3s ease';
+    book.style.opacity = '0';
+    book.style.transform = 'translateY(20px)';
+  });
+
+  // Short delay before showing new results
+  setTimeout(() => {
+    displayBooks(filteredBooks);
+  }, 300);
 }
 
 // Open the book viewer for the selected book
@@ -228,8 +239,10 @@ function loadMockData() {
       pageCount: 28,
       rating: 4.4,
       filepath: 'books/detective-peterson/'
-    }
+    },
+    
   ];
+  
   filterAndDisplayBooks();
   hideLoader();
 }

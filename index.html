@@ -3,20 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digital Bookshelf</title>
+  <title>PageFlow</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="library.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Digital Bookshelf</h1>
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search by title, author, or genre...">
-        <button id="searchBtn"><i class="fas fa-search"></i></button>
-      </div>
-    </header>
+  <!-- Floating Navbar -->
+  <nav class="navbar floating">
+    <div class="navbar-logo">
+      <i class="fas fa-book"></i>
+      <span>PageFlow</span>
+    </div>
+    
+    <div class="navbar-links">
+      <a href="#" class="nav-link">Browse</a>
+      <a href="#" class="nav-link">Collections</a>
+      <a href="#" class="nav-link">Authors</a>
+      <a href="#" class="nav-link">Blog</a>
+      <a href="#" class="nav-link">About</a>
+    </div>
+    
+    <!-- Search Bar integrated into Navbar -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Discover your next read...">
+      <button id="searchBtn"><i class="fas fa-search"></i></button>
+    </div>
+    
+    <div class="navbar-actions">
+      <a href="#" class="login-btn">Log In</a>
+      <a href="#" class="signup-btn">Sign Up</a>
+    </div>
+    
+    <div class="hamburger-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
 
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="search-container mobile">
+      <input type="text" id="mobileSearchInput" placeholder="Discover your next read...">
+      <button id="mobileSearchBtn"><i class="fas fa-search"></i></button>
+    </div>
+    
+    <div class="mobile-links">
+      <a href="#" class="mobile-link">Browse</a>
+      <a href="#" class="mobile-link">Collections</a>
+      <a href="#" class="mobile-link">Authors</a>
+      <a href="#" class="mobile-link">Blog</a>
+      <a href="#" class="mobile-link">About</a>
+    </div>
+    
+    <div class="mobile-actions">
+      <a href="#" class="login-btn">Log In</a>
+      <a href="#" class="signup-btn">Sign Up</a>
+    </div>
+  </div>
+
+  <div class="container">
     <div class="filters">
       <button class="filter-btn active" data-filter="all">All Books</button>
       <button class="filter-btn" data-filter="fiction">Fiction</button>
@@ -32,7 +78,7 @@
 
     <div class="loader" id="loader">
       <div class="spinner"></div>
-      <p>Loading books...</p>
+      <p>Loading your literary universe...</p>
     </div>
 
     <div class="error-message" id="errorMessage">
@@ -43,6 +89,10 @@
       <i class="fas fa-book-open"></i>
       <p>No books found matching your criteria</p>
     </div>
+    
+    <footer class="copyright">
+      <p>&copy; 2025 PageFlow. All rights reserved.</p>
+    </footer>
   </div>
 
   <script src="library.js"></script>
