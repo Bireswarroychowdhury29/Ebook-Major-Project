@@ -447,9 +447,9 @@ function toggleSidebar() {
   // Change the icon based on sidebar state
   const navToggle = document.getElementById("navToggle");
   if (document.getElementById("sidebar").classList.contains("open")) {
-    navToggle.innerHTML = '<i class="fas fa-times" style="font-size: 20px; color: white;"></i>';
+    navToggle.innerHTML = '<img src="images/cross.png" alt="Close" style="width: 30px; height: 30px;">';
   } else {
-    navToggle.innerHTML = '<i class="fas fa-bars" style="font-size: 20px; color: white;"></i>';
+    navToggle.innerHTML = '<img src="images/burger.png" alt="Menu" style="width: 20px; height: 20px;">';
   }
 }
 

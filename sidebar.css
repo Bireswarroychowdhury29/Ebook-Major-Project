@@ -48,21 +48,22 @@
 
 .nav-toggle {
     position: fixed;
-    left: 20px;
-    top: 20px;
+    left: 5px;
+    top: 5px;
     z-index: 1002;
-    background: #8CC950;
+    background: transparent;
     border: none;
     padding: 12px;
     border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
+    box-shadow: none;
 }
 
 .nav-toggle:hover {
-    background: #6BA33E;
+    background: transparent;
 }
+
 
 .nav-toggle i {
     font-size: 20px;
