@@ -8,8 +8,10 @@
   <link rel="stylesheet" href="sidebar.css" />
   <link rel="stylesheet" href="modal.css" />
   <link rel="stylesheet" href="widget.css" />
-  <title>The Case of the Missing Smile</title>
+  <title>PageFlow</title>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- Add PDF.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
 
 <body>
@@ -22,7 +24,7 @@
   <!-- Navigation Sidebar -->
   <div class="sidebar" id="sidebar">
     <span class="close-btn" onclick="toggleSidebar()">&times;</span>
-    <div class="sidebar-header">The Case of the Missing Smile</div>
+    <div class="sidebar-header" id="bookTitle">Loading Book...</div>
     <a href="#" onclick="goToPageNumber(1)"><i class="fas fa-home"></i>Cover Page</a>
     <a href="#" onclick="goToPageNumber(3)"><i class="fas fa-book-open"></i>Start Reading</a>
     <a href="#" id="sidebarBookmarkLink" onclick="toggleBookmark()"><i class="fas fa-bookmark"></i>Bookmark Current</a>
@@ -39,22 +41,10 @@
     </button>
 
     <div class="flipbook-container">
-      <div class="flipbook">
-        <div class="hard">The Case of the Missing Smile</div>
+      <div class="flipbook" id="flipbook">
+        <!-- Pages will be loaded dynamically -->
+        <div class="hard">Loading...</div>
         <div class="hard"></div>
-        <div><img src="images/img-1.jpg" alt="Book Cover" /></div>
-        <div>
-          <img src="images/img-2.jpg" alt="Detective Peterson reviewing reports" />
-          <small>"Now this looks like a very interesting case," Detective Peterson said aloud, as she reviewed the huge stack of reports on her desk.</small>
-        </div>
-        <div><small>After several minutes of searching, she found what she was looking for: a folder with the name 'Sophia Sue Simmons'.</small></div>
-        <div><img src="images/img-3.jpg" alt="Detective Peterson finding the file" /></div>
-        <div><small>"Hmm," Detective Peterson mumbled as she studied the file.</small></div>
-        <div><img src="images/img-4.jpg" alt="Detective Peterson studying the file" /></div>
-        <div><small>Sophia Sue always smiled, from morning till night. She never stopped smiling.</small></div>
-        <div><img src="images/img-5.jpg" alt="Sophia Sue smiling" /></div>
-        <div class="hard"></div>
-        <div class="hard">Thank You</div>
       </div>
     </div>
 
@@ -78,7 +68,7 @@
       </div>
       <div class="page-controls">
         <input type="text" id="pageInput" class="page-input" placeholder="1" />
-        <span id="pageTotal" class="page-total">1</span>
+        <span id="pageTotal" class="page-total">/ 1</span>
       </div>
       <div class="bookmark-control">
         <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
@@ -104,14 +94,20 @@
     </div>
   </div>
 
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading your book...</p>
+  </div>
+
   <script src="jquery.js"></script>
   <script src="turn.js"></script>
   <script src="script.js"></script>
-<!-- Floating AI Widget -->
-<div id="aiWidget" class="floating-widget">
-  <img src="images/bot.png" alt="AI Widget" id="aiWidgetIcon">
-  <div class="helper-bot-label">Helper Bot</div>
-  <div id="aiWidgetMenu" class="widget-menu">
+  <!-- Floating AI Widget -->
+  <div id="aiWidget" class="floating-widget">
+    <img src="images/bot.png" alt="AI Widget" id="aiWidgetIcon">
+    <div class="helper-bot-label">Helper Bot</div>
+    <div id="aiWidgetMenu" class="widget-menu">
       <button onclick="textToSpeech()">
         <img src="images/sound-wave.png" alt="" style="width: 16px; height: 16px; margin-right: 5px;">
         Text-to-Speech
@@ -120,8 +116,8 @@
         <img src="images/dictionary.png" alt="" style="width: 16px; height: 16px; margin-right: 5px;">
         Dictionary
       </button>
+    </div>
   </div>
-</div>
   <script src="config.js"></script>
   <script src="widget.js"></script>
 </body>
