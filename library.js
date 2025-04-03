@@ -33,14 +33,26 @@ async function fetchBooks() {
   hideEmptyState();
 
   try {
-    // This will need to be replaced with your actual API endpoint that connects to MongoDB
-    const response = await fetch('/api/books');
+    // This is the API endpoint we just created
+    const response = await fetch('http://localhost:3000/api/books');
     
     if (!response.ok) {
       throw new Error('Failed to fetch books');
     }
 
-    allBooks = await response.json();
+    const booksData = await response.json();
+    
+    // Transform MongoDB data to match your frontend model
+    allBooks = booksData.map(book => ({
+      _id: book._id,
+      title: book.title,
+      author: book.author,
+      genre: book.category || 'Uncategorized',  // Map 'category' to 'genre'
+      coverImage: book.cover || 'images/default-cover.jpg', // Map 'cover' to 'coverImage'
+      rating: book.rating || 0,
+      filepath: book.bookFile || ''
+    }));
+    
     filterAndDisplayBooks();
     
   } catch (error) {
@@ -249,7 +261,7 @@ function loadMockData() {
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-  // Comment out the appropriate line based on whether you're using the API or mock data
-  // fetchBooks(); // Use this when your API is ready
-  loadMockData(); // Use this for development/demo
+  fetchBooks(); // Use this to fetch from your API
+  // loadMockData(); // Comment this out
 });
+
