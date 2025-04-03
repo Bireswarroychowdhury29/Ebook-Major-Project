@@ -1,17 +1,3 @@
-// Book data model example
-/*
-{
-  _id: "ObjectId",
-  title: "The Case of the Missing Smile",
-  author: "Jane Smith",
-  genre: "children",
-  coverImage: "images/book-covers/missing-smile.jpg", 
-  pageCount: 12,
-  rating: 4.5,
-  filepath: "books/case-of-the-missing-smile/"
-}
-*/
-
 // DOM Elements
 const booksGrid = document.getElementById('booksGrid');
 const loader = document.getElementById('loader');
@@ -20,47 +6,121 @@ const emptyState = document.getElementById('emptyState');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const filterBtns = document.querySelectorAll('.filter-btn');
+const hamburgerMenu = document.querySelector('.hamburger-menu');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileSearchInput = document.getElementById('mobileSearchInput');
+const mobileSearchBtn = document.getElementById('mobileSearchBtn');
 
 // Variables for state management
 let allBooks = [];
 let currentFilter = 'all';
 let searchTerm = '';
 
-// Fetch books from MongoDB API
-async function fetchBooks() {
+// Static book data - no MongoDB needed
+function loadStaticBooks() {
   showLoader();
   hideError();
   hideEmptyState();
 
-  try {
-    // This is the API endpoint we just created
-    const response = await fetch('http://localhost:3000/api/books');
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch books');
+  // Static books array using data from bookdata.txt
+  allBooks = [
+    {
+      _id: '67ea5197300f52b5ea0e5a06',
+      title: 'The Lion Who Saw Himself In The Water',
+      author: 'Idries Shah',
+      genre: 'children',
+      coverImage: 'covers/C1.png',
+      rating: 4.5,
+      filepath: 'books/c1.pdf'
+    },
+    {
+      _id: '67ea51ad300f52b5ea0e5a09',
+      title: 'The Silly Chicken',
+      author: 'Idries Shah',
+      genre: 'children',
+      rating: 4.1,
+      coverImage: 'covers/C2.png',
+      filepath: 'books/c2.pdf'
+    },
+    {
+      _id: '67ea51d6300f52b5ea0e5a0c',
+      title: 'How It All Began',
+      author: 'Herobrine',
+      genre: 'fiction',
+      rating: 4.7,
+      coverImage: 'covers/F1.png',
+      filepath: 'books/f1.pdf'
+    },
+    {
+      _id: '67ea51ec300f52b5ea0e5a11',
+      title: 'Portrait Of A King',
+      author: 'L.A. Buck',
+      genre: 'fiction',
+      rating: 4.3,
+      coverImage: 'covers/F2.png',
+      filepath: 'books/f2.pdf'
+    },
+    {
+      _id: '67ea51fc300f52b5ea0e5a14',
+      title: 'The Absent Author',
+      author: 'Ron Roy',
+      genre: 'mystery',
+      rating: 3.8,
+      coverImage: 'covers/M1.png',
+      filepath: 'books/m1.pdf'
+    },
+    {
+      _id: '67ea5208300f52b5ea0e5a17',
+      title: 'The White Wolf',
+      author: 'Ron Roy',
+      genre: 'mystery',
+      rating: 4.0,
+      coverImage: 'covers/M2.png',
+      filepath: 'books/m2.pdf'
+    },
+    {
+      _id: '67ea521d300f52b5ea0e5a1a',
+      title: 'Cesar Chavez - Autobiography',
+      author: 'Anne Schraff',
+      genre: 'non-fiction',
+      rating: 4.9,
+      coverImage: 'covers/NF1.png',
+      filepath: 'books/nf1.pdf'
+    },
+    {
+      _id: '67ea5229300f52b5ea0e5a1d',
+      title: 'Kalinski Art',
+      author: 'John Paul Kirkham',
+      genre: 'non-fiction',
+      rating: 4.0,
+      coverImage: 'covers/NF2.png',
+      filepath: 'books/nf2.pdf'
+    },
+    {
+      _id: '67ea5233300f52b5ea0e5a20',
+      title: 'A Cavity Is A Hole In Your Tooth',
+      author: 'Jim Henson',
+      genre: 'science',
+      rating: 3.5,
+      coverImage: 'covers/S1.png',
+      filepath: 'books/s1.pdf'
+    },
+    {
+      _id: '67ea5247300f52b5ea0e5a23',
+      title: 'The Skeleton Inside You',
+      author: 'Philip Balestrino',
+      genre: 'science',
+      rating: 4.4,
+      coverImage: 'covers/S2.png',
+      filepath: 'books/s2.pdf'
     }
+  ];
 
-    const booksData = await response.json();
-    
-    // Transform MongoDB data to match your frontend model
-    allBooks = booksData.map(book => ({
-      _id: book._id,
-      title: book.title,
-      author: book.author,
-      genre: book.category || 'Uncategorized',  // Map 'category' to 'genre'
-      coverImage: book.cover || 'images/default-cover.jpg', // Map 'cover' to 'coverImage'
-      rating: book.rating || 0,
-      filepath: book.bookFile || ''
-    }));
-    
+  // Display the books after a short delay to simulate loading
+  setTimeout(() => {
     filterAndDisplayBooks();
-    
-  } catch (error) {
-    console.error('Error fetching books:', error);
-    showError();
-  } finally {
     hideLoader();
-  }
+  }, 500);
 }
 
 // Display books in the grid with animations
@@ -82,7 +142,7 @@ function displayBooks(books) {
 
     bookCard.innerHTML = `
       <div class="book-cover">
-        <img src="${book.coverImage || 'images/default-cover.jpg'}" alt="${book.title}">
+        <img src="${book.coverImage || 'covers/default-cover.jpg'}" alt="${book.title}">
       </div>
       <div class="book-info">
         <h3 class="book-title">${book.title}</h3>
@@ -135,7 +195,7 @@ function filterAndDisplayBooks() {
 
 // Open the book viewer for the selected book
 function openBookViewer(book) {
-  window.location.href = `book-viewer.html?bookId=${book._id}`;
+  window.location.href = `book-viewer.html?bookPath=${encodeURIComponent(book.filepath)}`;
 }
 
 // UI Helper Functions
@@ -176,6 +236,20 @@ searchInput.addEventListener('keyup', (e) => {
   }
 });
 
+// Mobile search functionality
+mobileSearchBtn.addEventListener('click', () => {
+  searchTerm = mobileSearchInput.value;
+  filterAndDisplayBooks();
+});
+
+mobileSearchInput.addEventListener('keyup', (e) => {
+  if (e.key === 'Enter') {
+    searchTerm = mobileSearchInput.value;
+    filterAndDisplayBooks();
+  }
+});
+
+// Category filter buttons
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     // Update active button UI
@@ -188,80 +262,13 @@ filterBtns.forEach(btn => {
   });
 });
 
-// For development/demo purposes only - remove in production
-// This creates mock data when the actual API is not available
-function loadMockData() {
-  allBooks = [
-    {
-      _id: '1',
-      title: 'The Case of the Missing Smile',
-      author: 'Jane Smith',
-      genre: 'children',
-      coverImage: 'images/img-1.jpg',
-      pageCount: 12,
-      rating: 4.5,
-      filepath: 'books/case-of-the-missing-smile/'
-    },
-    {
-      _id: '2',
-      title: 'Mystery at Midnight',
-      author: 'John Doe',
-      genre: 'mystery',
-      coverImage: 'images/img-3.jpg',
-      pageCount: 24,
-      rating: 4.2,
-      filepath: 'books/mystery-at-midnight/'
-    },
-    {
-      _id: '3',
-      title: 'The Adventure Begins',
-      author: 'Sarah Johnson',
-      genre: 'fiction',
-      coverImage: 'images/img-5.jpg',
-      pageCount: 32,
-      rating: 4.7,
-      filepath: 'books/adventure-begins/'
-    },
-    {
-      _id: '4',
-      title: 'Space Explorers',
-      author: 'Michael Brown',
-      genre: 'science',
-      coverImage: 'images/img-2.jpg',
-      pageCount: 18,
-      rating: 4.0,
-      filepath: 'books/space-explorers/'
-    },
-    {
-      _id: '5',
-      title: 'The Hidden Truth',
-      author: 'Emily Clark',
-      genre: 'non-fiction',
-      coverImage: 'images/img-4.jpg',
-      pageCount: 42,
-      rating: 4.8,
-      filepath: 'books/hidden-truth/'
-    },
-    {
-      _id: '6',
-      title: 'Detective Peterson Returns',
-      author: 'Jane Smith',
-      genre: 'mystery',
-      coverImage: 'images/img-2.jpg',
-      pageCount: 28,
-      rating: 4.4,
-      filepath: 'books/detective-peterson/'
-    },
-    
-  ];
-  
-  filterAndDisplayBooks();
-  hideLoader();
-}
+// Mobile menu toggle
+hamburgerMenu.addEventListener('click', () => {
+  hamburgerMenu.classList.toggle('active');
+  mobileMenu.classList.toggle('active');
+});
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-  fetchBooks(); // Use this to fetch from your API
-  // loadMockData(); // Comment this out
+  loadStaticBooks(); // Load static book data instead of fetching from MongoDB
 });
-
