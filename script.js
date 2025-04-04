@@ -137,6 +137,9 @@ $(document).ready(function () {
       'margin-right': 'auto'
     });
   });
+  
+  // Make sure buttons position updates after a short delay
+  setTimeout(updatePageTurnButtonPositions, 100);
 });
 
 // Function to load and setup a PDF book
@@ -213,11 +216,15 @@ function loadPDFBook(pdfPath) {
           'margin-right': 'auto'
         });
         
+        // Initial adjustment for first page
+        updatePageIndex(1);
+        adjustFlipbookPosition(1);
         updateSidebarBookmarkState(1);
         
         // Bind turning event
         flipbook.bind("turning", function (event, page) {
           updatePageIndex(page);
+          adjustFlipbookPosition(page);
           // Ensure book stays centered on page turn
           flipbook.css({
             'margin-left': 'auto',
@@ -330,7 +337,14 @@ function loadStaticDemoBook() {
   
   // Initial setup
   updatePageIndex(1);
+  adjustFlipbookPosition(1);
   updateSidebarBookmarkState(1);
+  
+  // Bind turning event for demo book
+  flipbook.bind("turning", function (event, page) {
+    updatePageIndex(page);
+    adjustFlipbookPosition(page);
+  });
   
   // Hide loading overlay
   $("#loadingOverlay").fadeOut();
@@ -352,7 +366,7 @@ function initializeStaticControls() {
     'position': 'fixed',
     'bottom': '10px',
     'left': '50%',
-    'transform': 'translateX(-50%)', // Center the controls
+    'transform': 'translateX(calc(-50% - 25px))', // Added negative offset to shift left
     'z-index': '9999',
     'display': 'flex',
     'flex-direction': 'column',
@@ -377,27 +391,40 @@ function initializeStaticControls() {
   $('body').append(staticWrapper);
 }
 
-// Function to adjust the flipbook position - simplified to always keep centered
-function adjustFlipbookPosition() {
+// Function to adjust the flipbook position based on current page
+function adjustFlipbookPosition(page) {
   if (!bookLoaded) return;
   
-  // Always keep the flipbook centered at all times
-  $(".flipbook").css({
-    'margin-left': 'auto',
-    'margin-right': 'auto'
+  const totalPages = $(".flipbook").turn("pages");
+  
+  // Apply position adjustment to container
+  const container = $(".flipbook-container");
+  
+  // Add transition for smooth movement
+  container.css({
+    'transition': 'transform 0.5s ease-in-out' 
   });
   
-  // Update page turn buttons
+  // Default position is slightly to the right
+  let translateX = 25; // Default right shift
+  
+  if (page === totalPages) {
+    // Only shift left on the last page
+    translateX = 25;
+  }
+  
+  // Apply the position
+  updateContainerPosition(translateX);
+  
+  // Update page turn buttons after position change
   updatePageTurnButtonPositions();
 }
 
 // Function to update container position and zoom together
 function updateContainerPosition(translateXPercent) {
   const container = $(".flipbook-container");
-  // Always keep centered, only apply zoom
   container.css({
-    'transform': `scale(${zoomLevel})`,
-    'transform-origin': 'center center'
+    'transform': `translateX(${translateXPercent}%) scale(${zoomLevel})`
   });
 }
 
@@ -528,8 +555,11 @@ function resetZoom() {
 function updateZoom() {
   if (!bookLoaded) return;
   
-  // Apply zoom to container - now always centered
-  updateContainerPosition(0);
+  // Get the current page to maintain proper positioning
+  const currentPage = parseInt($("#pageInput").val());
+  
+  // Apply both zoom and position adjustment
+  adjustFlipbookPosition(currentPage);
   
   // Update buttons position after zoom
   updatePageTurnButtonPositions();
