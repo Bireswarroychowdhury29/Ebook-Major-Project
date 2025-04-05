@@ -1,227 +1,232 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 body {
-    background-color: #000000;
-    font-family: Arial, sans-serif;
-    display: grid;
-    place-content: center;
-    background-image: url(images/BgImage.png);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+  background-color: #000000;
+  font-family: Arial, sans-serif;
+  display: grid;
+  place-content: center;
+  background-image: url(images/BgImage.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* Content shift when sidebar is open */
 .content {
-    transition: margin-left 0.5s;
-    padding: 20px;
+  transition: margin-left 0.5s;
+  padding: 20px;
 }
 
 .content.shifted {
-    margin-left: 250px;
+  margin-left: 250px;
 }
 
 /* Flipbook container - UNCHANGED FROM ORIGINAL */
 .flipbook-container {
-    position: relative;
-    z-index: 50;
-    margin-bottom: 120px;
-    overflow: hidden;
-    transition: margin-left 0.5s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 600px;
-    width: 1000px;
-    margin-right: 420px;
+  position: relative;
+  z-index: 50;
+  margin-bottom: 120px;
+  overflow: hidden;
+  transition: margin-left 0.5s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+  width: 1000px;
+  margin-right: 420px;
 }
 
 /* Flipbook styles */
 .flipbook {
-    margin: 0 auto;
-    max-width: 90%;
-    max-height: 80vh;
-    box-shadow: none;
+  margin: 0 auto;
+  max-width: 90%;
+  max-height: 80vh;
+  box-shadow: none;
 }
 
 .flipbook .hard {
-    background: #8CC950 !important;
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    box-shadow: none;
+  background: #8cc950 !important;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  box-shadow: none;
 }
 
 .flipbook .hard small {
-    font-style: italic;
-    font-weight: lighter;
-    opacity: 0.7;
-    font-size: 14px;
+  font-style: italic;
+  font-weight: lighter;
+  opacity: 0.7;
+  font-size: 14px;
 }
 
 .flipbook .page {
-    background: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.11);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.11);
 }
 
 .page img {
-    width: 70%;
-    object-fit: cover;
-    margin: auto;
+  width: 70%;
+  object-fit: cover;
+  margin: auto;
 }
 
 .flipbook .page small {
-    font-size: 14px;
-    margin-bottom: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 /* Notification styles */
 .notification {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #8CC950;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-    z-index: 2000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #8cc950;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* Add these styles to your CSS files */
 
 /* Loading Indicator */
 .loading-indicator {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    color: white;
-    font-family: Arial, sans-serif;
-  }
-  
-  .spinner {
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top: 5px solid #fff;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  /* PDF Error Message */
-  .pdf-error {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    color: white;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .pdf-error h3 {
-    margin-bottom: 10px;
-    font-size: 24px;
-  }
-  
-  .pdf-error button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .pdf-error button:hover {
-    background-color: #45a049;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  font-family: Arial, sans-serif;
+}
 
-  /* Styles for PDF pages */
+.spinner {
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 5px solid #fff;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* PDF Error Message */
+.pdf-error {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.pdf-error h3 {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.pdf-error button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pdf-error button:hover {
+  background-color: #45a049;
+}
+
+/* Styles for PDF pages */
 .pdf-page {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    background-color: #fff;
-  }
-  
-  .pdf-canvas {
-    display: block;
-    margin: 0 auto;
-  }
-  
-  .pdf-error-page {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f9f9f9;
-    color: #e74c3c;
-    font-size: 16px;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  /* Loading indicator improvements */
-  .loading-indicator {
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 10000;
-  }
-  
-  .spinner {
-    border-color: #4CAF50 transparent transparent transparent;
-  }
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+}
 
-  /* Loading Overlay */
+.pdf-canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+.pdf-error-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  color: #e74c3c;
+  font-size: 16px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Loading indicator improvements */
+.loading-indicator {
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+}
+
+.spinner {
+  border-color: #4caf50 transparent transparent transparent;
+}
+
+/* Loading Overlay */
 .loading-overlay {
   position: fixed;
   top: 0;

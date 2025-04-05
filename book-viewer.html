@@ -1,124 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="controls.css" />
-  <link rel="stylesheet" href="sidebar.css" />
-  <link rel="stylesheet" href="modal.css" />
-  <link rel="stylesheet" href="widget.css" />
-  <title>PageFlow</title>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <!-- Add PDF.js library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="controls.css" />
+    <link rel="stylesheet" href="sidebar.css" />
+    <link rel="stylesheet" href="modal.css" />
+    <link rel="stylesheet" href="widget.css" />
+    <title>PageFlow</title>
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Add PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  </head>
 
-<body>
-
- <!-- Navigation Toggle Button -->
-<button class="nav-toggle" id="navToggle" onclick="toggleSidebar()">
-  <img src="images/burger.png" alt="Menu" style="width: 30px; height: 30px;">
-</button>
-
-  <!-- Navigation Sidebar -->
-  <div class="sidebar" id="sidebar">
-
-    <div class="sidebar-header" id="bookTitle">Loading Book...</div>
-    <a href="#" onclick="goToPageNumber(1)"><i class="fas fa-home"></i>Cover Page</a>
-    <a href="#" onclick="goToPageNumber(3)"><i class="fas fa-book-open"></i>Start Reading</a>
-    <a href="#" id="sidebarBookmarkLink" onclick="toggleBookmark()"><i class="fas fa-bookmark"></i>Bookmark Current</a>
-    <a href="#" id="bookmarksMenu"><i class="fas fa-list"></i>View Bookmarks</a>
-    <a href="#" onclick="goToPageNumber($('.flipbook').turn('pages'))"><i class="fas fa-fast-forward"></i>Last Page</a>
-    <a href="index.html"><i class="fas fa-book"></i>Back to Library</a>
-  </div>
-
-  <!-- Content Container -->
-  <div class="content" id="content">
-    <!-- Left Page Turn Button -->
-    <button id="leftTurnBtn" onclick="$('.flipbook').turn('previous');" class="page-turn-btn left-turn-btn">
-      <img src="images/LeftArrow.png" alt="Previous Page" class="left-arrow-icon">
+  <body>
+    <!-- Navigation Toggle Button -->
+    <button class="nav-toggle" id="navToggle" onclick="toggleSidebar()">
+      <img
+        src="images/burger.png"
+        alt="Menu"
+        style="width: 30px; height: 30px"
+      />
     </button>
 
-    <div class="flipbook-container">
-      <div class="flipbook" id="flipbook">
-        <!-- Pages will be loaded dynamically -->
-        <div class="hard">Loading...</div>
-        <div class="hard"></div>
-      </div>
+    <!-- Navigation Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header" id="bookTitle">Loading Book...</div>
+      <a href="#" onclick="goToPageNumber(1)"
+        ><i class="fas fa-home"></i>Cover Page</a
+      >
+      <a href="#" onclick="goToPageNumber(3)"
+        ><i class="fas fa-book-open"></i>Start Reading</a
+      >
+      <a href="#" id="sidebarBookmarkLink" onclick="toggleBookmark()"
+        ><i class="fas fa-bookmark"></i>Bookmark Current</a
+      >
+      <a href="#" id="bookmarksMenu"
+        ><i class="fas fa-list"></i>View Bookmarks</a
+      >
+      <a href="#" onclick="goToPageNumber($('.flipbook').turn('pages'))"
+        ><i class="fas fa-fast-forward"></i>Last Page</a
+      >
+      <a href="index.html"><i class="fas fa-book"></i>Back to Library</a>
     </div>
 
-    <!-- Right Page Turn Button -->
-    <button id="rightTurnBtn" onclick="$('.flipbook').turn('next');" class="page-turn-btn right-turn-btn">
-      <img src="images/RightArrow.png" alt="Next Page" class="right-arrow-icon">
-    </button>
-
-    <!-- Controls Container -->
-    <div class="controls-container" id="controlsContainer">
-      <div class="zoom-controls">
-        <button class="control-button" onclick="zoomOut()" title="Zoom Out">
-          <img src="images/zoom-out.png" alt="Zoom Out" class="control-icon">
-        </button>
-        <button class="control-button" onclick="resetZoom()" title="Reset Zoom">
-          <img src="images/reset.png" alt="Reset Zoom" class="control-icon">
-        </button>
-        <button class="control-button" onclick="zoomIn()" title="Zoom In">
-          <img src="images/zoom-in.png" alt="Zoom In" class="control-icon">
-        </button>
-      </div>
-      <div class="page-controls">
-        <input type="text" id="pageInput" class="page-input" placeholder="1" />
-        <span id="pageTotal" class="page-total">/ 1</span>
-      </div>
-      <div class="bookmark-control">
-        <button id="bookmarkBtn" class="control-button bookmark-btn" onclick="toggleBookmark()" title="Bookmark Page" disabled>
-          <img src="images/star.png" alt="Bookmark" class="control-icon">
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bookmark Modal -->
-  <div class="bookmark-modal" id="bookmarkModal">
-    <div class="bookmark-modal-content">
-      <div class="bookmark-modal-header">
-        <h2 class="bookmark-modal-title">Your Bookmarks</h2>
-        <button class="bookmark-modal-close" onclick="closeBookmarkModal()">&times;</button>
-      </div>
-      <div class="bookmark-modal-body" id="bookmarkModalBody">
-        <!-- Bookmark list will be populated here -->
-      </div>
-      <div class="bookmark-modal-footer">
-        <button onclick="closeBookmarkModal()">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="spinner"></div>
-    <p>Loading your book...</p>
-  </div>
-
-  <script src="jquery.js"></script>
-  <script src="turn.js"></script>
-  <script src="script.js"></script>
-  <!-- Floating AI Widget -->
-  <div id="aiWidget" class="floating-widget">
-    <img src="images/bot.png" alt="AI Widget" id="aiWidgetIcon">
-    <div class="helper-bot-label">Helper Bot</div>
-    <div id="aiWidgetMenu" class="widget-menu">
-      <button onclick="textToSpeech()">
-        <img src="images/sound-wave.png" alt="" style="width: 16px; height: 16px; margin-right: 5px;">
-        Text-to-Speech
+    <!-- Content Container -->
+    <div class="content" id="content">
+      <!-- Left Page Turn Button -->
+      <button
+        id="leftTurnBtn"
+        onclick="$('.flipbook').turn('previous');"
+        class="page-turn-btn left-turn-btn"
+      >
+        <img
+          src="images/LeftArrow.png"
+          alt="Previous Page"
+          class="left-arrow-icon"
+        />
       </button>
-      <button onclick="dictionaryLookup()">
-        <img src="images/dictionary.png" alt="" style="width: 16px; height: 16px; margin-right: 5px;">
-        Dictionary
+
+      <div class="flipbook-container">
+        <div class="flipbook" id="flipbook">
+          <!-- Pages will be loaded dynamically -->
+          <div class="hard">Loading...</div>
+          <div class="hard"></div>
+        </div>
+      </div>
+
+      <!-- Right Page Turn Button -->
+      <button
+        id="rightTurnBtn"
+        onclick="$('.flipbook').turn('next');"
+        class="page-turn-btn right-turn-btn"
+      >
+        <img
+          src="images/RightArrow.png"
+          alt="Next Page"
+          class="right-arrow-icon"
+        />
       </button>
+
+      <!-- Controls Container -->
+      <div class="controls-container" id="controlsContainer">
+        <div class="zoom-controls">
+          <button class="control-button" onclick="zoomOut()" title="Zoom Out">
+            <img
+              src="images/zoom-out.png"
+              alt="Zoom Out"
+              class="control-icon"
+            />
+          </button>
+          <button
+            class="control-button"
+            onclick="resetZoom()"
+            title="Reset Zoom"
+          >
+            <img src="images/reset.png" alt="Reset Zoom" class="control-icon" />
+          </button>
+          <button class="control-button" onclick="zoomIn()" title="Zoom In">
+            <img src="images/zoom-in.png" alt="Zoom In" class="control-icon" />
+          </button>
+        </div>
+        <div class="page-controls">
+          <input
+            type="text"
+            id="pageInput"
+            class="page-input"
+            placeholder="1"
+          />
+          <span id="pageTotal" class="page-total">/ 1</span>
+        </div>
+        <div class="bookmark-control">
+          <button
+            id="bookmarkBtn"
+            class="control-button bookmark-btn"
+            onclick="toggleBookmark()"
+            title="Bookmark Page"
+            disabled
+          >
+            <img src="images/star.png" alt="Bookmark" class="control-icon" />
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <script src="config.js"></script>
-  <script src="widget.js"></script>
-</body>
+
+    <!-- Bookmark Modal -->
+    <div class="bookmark-modal" id="bookmarkModal">
+      <div class="bookmark-modal-content">
+        <div class="bookmark-modal-header">
+          <h2 class="bookmark-modal-title">Your Bookmarks</h2>
+          <button class="bookmark-modal-close" onclick="closeBookmarkModal()">
+            &times;
+          </button>
+        </div>
+        <div class="bookmark-modal-body" id="bookmarkModalBody">
+          <!-- Bookmark list will be populated here -->
+        </div>
+        <div class="bookmark-modal-footer">
+          <button onclick="closeBookmarkModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Loading your book...</p>
+    </div>
+
+    <script src="jquery.js"></script>
+    <script src="turn.js"></script>
+    <script src="js/bookData.js"></script>
+    <script src="js/pdfLoader.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/zoom.js"></script>
+    <script src="js/bookmarks.js"></script>
+    <script src="js/core.js"></script>
+    <!-- Floating AI Widget -->
+    <div id="aiWidget" class="floating-widget">
+      <img src="images/bot.png" alt="AI Widget" id="aiWidgetIcon" />
+      <div class="helper-bot-label">Helper Bot</div>
+      <div id="aiWidgetMenu" class="widget-menu">
+        <button onclick="textToSpeech()">
+          <img
+            src="images/sound-wave.png"
+            alt=""
+            style="width: 16px; height: 16px; margin-right: 5px"
+          />
+          Text-to-Speech
+        </button>
+        <button onclick="dictionaryLookup()">
+          <img
+            src="images/dictionary.png"
+            alt=""
+            style="width: 16px; height: 16px; margin-right: 5px"
+          />
+          Dictionary
+        </button>
+      </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="widget.js"></script>
+  </body>
 </html>
