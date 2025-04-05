@@ -1,14 +1,15 @@
 :root {
   --primary-color: #8CC950;
-  --primary-glow: 0 0 10px rgba(140, 201, 80, 0.7);
   --secondary-color: #62A32D;
   --text-color: #e0e0e0;
-  --dark-bg: #121212;
-  --darker-bg: #0a0a0a;
-  --card-bg: #1e1e1e;
-  --card-hover: #252525;
-  --shadow: 0 4px 15px rgba(140, 201, 80, 0.3);
-  --border-radius: 8px;
+  --dark-bg: #0a0a0a;
+  --darker-bg: #050505;
+  --card-bg: rgba(30, 30, 30, 0.7);
+  --card-hover: rgba(40, 40, 40, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --border-radius: 12px;
+  --transition: all 0.3s ease;
 }
 
 * {
@@ -23,18 +24,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 2rem;
-  background-color: rgba(10, 10, 10, 0.90);
+  padding: 1rem 2rem;
+  background-color: rgba(10, 10, 10, 0.75);
   position: fixed;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   backdrop-filter: blur(10px);
-  border-radius: 9999px;
+  border-radius: 12px;
   width: 90%;
   max-width: 1200px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
 }
 
 .navbar-logo {
@@ -59,7 +61,7 @@
   color: var(--text-color);
   text-decoration: none;
   font-size: 1rem;
-  transition: all 0.3s;
+  transition: var(--transition);
   position: relative;
 }
 
@@ -91,7 +93,7 @@
 .login-btn {
   color: var(--text-color);
   text-decoration: none;
-  transition: all 0.3s;
+  transition: var(--transition);
   font-size: 0.95rem;
 }
 
@@ -104,16 +106,14 @@
   color: var(--darker-bg);
   text-decoration: none;
   padding: 0.5rem 1.2rem;
-  border-radius: 9999px;
+  border-radius: 24px;
   font-weight: 600;
-  transition: all 0.3s;
-  box-shadow: 0 0 5px rgba(140, 201, 80, 0.3);
+  transition: var(--transition);
 }
 
 .signup-btn:hover {
   background-color: var(--secondary-color);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(140, 201, 80, 0.4);
 }
 
 .search-container {
@@ -126,30 +126,30 @@
 .search-container input {
   flex: 1;
   padding: 0.6rem 1rem;
-  background-color: rgba(30, 30, 30, 0.8);
-  border: 1px solid rgba(140, 201, 80, 0.2);
-  border-radius: 9999px;
+  background-color: rgba(30, 30, 30, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
   font-size: 0.9rem;
   color: var(--text-color);
-  transition: all 0.3s;
+  transition: var(--transition);
 }
 
 .search-container input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 8px rgba(140, 201, 80, 0.4);
+  background-color: rgba(30, 30, 30, 0.8);
 }
 
 .search-container button {
   position: absolute;
-  right: 5px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--text-color);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: var(--transition);
   font-size: 0.9rem;
   padding: 0.3rem;
 }
@@ -169,7 +169,7 @@
   width: 25px;
   height: 3px;
   background-color: var(--text-color);
-  transition: all 0.3s;
+  transition: var(--transition);
   border-radius: 5px;
 }
 
@@ -177,7 +177,7 @@
   display: none;
   flex-direction: column;
   gap: 20px;
-  background-color: rgba(10, 10, 10, 0.95);
+  background-color: rgba(10, 10, 10, 0.9);
   position: fixed;
   top: 80px;
   left: 0;
@@ -185,7 +185,7 @@
   padding: 20px;
   z-index: 999;
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(140, 201, 80, 0.1);
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .mobile-menu .search-container.mobile {
@@ -204,8 +204,8 @@
   text-decoration: none;
   padding: 10px 0;
   font-size: 1.1rem;
-  border-bottom: 1px solid rgba(140, 201, 80, 0.1);
-  transition: all 0.3s;
+  border-bottom: 1px solid var(--glass-border);
+  transition: var(--transition);
 }
 
 .mobile-link:hover {
@@ -256,123 +256,19 @@
   }
 }
 
-/* Existing CSS below */
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.7;
-    transform: scale(0.98);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0.7;
-    transform: scale(0.98);
-  }
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-@keyframes glow {
-  0% {
-    box-shadow: 0 0 5px rgba(140, 201, 80, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(140, 201, 80, 0.8);
-  }
-  100% {
-    box-shadow: 0 0 5px rgba(140, 201, 80, 0.5);
-  }
-}
-
 body {
   background-color: var(--dark-bg);
   color: var(--text-color);
   padding: 0;
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(140, 201, 80, 0.03) 0%, transparent 20%),
-    radial-gradient(circle at 90% 80%, rgba(140, 201, 80, 0.03) 0%, transparent 20%);
   position: relative;
   overflow-x: hidden;
-  /* Add padding to account for the fixed navbar */
   padding-top: 100px;
-}
-
-/* Background moving gradient effect */
-body::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    rgba(140, 201, 80, 0) 0%, 
-    rgba(140, 201, 80, 0.03) 25%, 
-    rgba(140, 201, 80, 0.05) 50%, 
-    rgba(140, 201, 80, 0.03) 75%, 
-    rgba(140, 201, 80, 0) 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 15s ease infinite;
-  z-index: -1;
-  pointer-events: none;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px 0;
-  margin-bottom: 40px;
-  border-bottom: 1px solid rgba(140, 201, 80, 0.2);
-  position: relative;
-}
-
-h1 {
-  color: var(--primary-color);
-  font-size: 2.8rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  /*text-shadow: var(--primary-glow);*/
-  position: relative;
 }
 
 .filters {
@@ -384,30 +280,27 @@ h1 {
 }
 
 .filter-btn {
-  background-color: var(--darker-bg);
+  background-color: rgba(15, 15, 15, 0.6);
   color: var(--text-color);
-  border: 1px solid rgba(140, 201, 80, 0.3);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 10px 18px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: var(--transition);
   font-size: 0.95rem;
   letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
+  backdrop-filter: blur(5px);
 }
 
 .filter-btn:hover {
   border-color: var(--primary-color);
   color: var(--primary-color);
-  box-shadow: 0 0 8px rgba(140, 201, 80, 0.4);
 }
 
 .filter-btn.active {
   background-color: var(--primary-color);
   color: var(--darker-bg);
   border-color: var(--primary-color);
-  box-shadow: var(--primary-glow);
   font-weight: 600;
 }
 
@@ -423,78 +316,29 @@ h1 {
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow);
-  transition: all 0.4s;
+  transition: var(--transition);
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(140, 201, 80, 0.1);
+  border: 1px solid var(--glass-border);
   position: relative;
-  transform: translateY(30px);
-  opacity: 0;
-  animation: fadeInUp 0.6s forwards;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Stagger the animations for each card */
-.book-card:nth-child(2) {
-  animation-delay: 0.1s;
-}
-.book-card:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.book-card:nth-child(4) {
-  animation-delay: 0.3s;
-}
-.book-card:nth-child(5) {
-  animation-delay: 0.4s;
-}
-.book-card:nth-child(n+6) {
-  animation-delay: 0.5s;
-}
-
-.book-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 0;
-  background-color: var(--primary-color);
-  transition: height 0.3s ease;
-}
-
-.book-card:hover::before {
-  height: 100%;
+  backdrop-filter: blur(8px);
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .book-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 25px rgba(140, 201, 80, 0.25);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
   background-color: var(--card-hover);
-  border-color: rgba(140, 201, 80, 0.4);
+  border-color: rgba(140, 201, 80, 0.2);
 }
 
 .book-cover {
   height: 300px;
   overflow: hidden;
   position: relative;
-}
-
-.book-cover::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40%;
-  background: linear-gradient(to top, var(--card-bg), transparent);
 }
 
 .book-cover img {
@@ -513,23 +357,8 @@ h1 {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid rgba(140, 201, 80, 0.1);
+  border-top: 1px solid var(--glass-border);
   position: relative;
-}
-
-.book-info::before {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 1px;
-  background-color: var(--primary-color);
-  bottom: 0;
-  left: 0;
-  transition: width 0.5s ease;
-}
-
-.book-card:hover .book-info::before {
-  width: 100%;
 }
 
 .book-title {
@@ -558,34 +387,49 @@ h1 {
 }
 
 .book-genre {
-  background-color: rgba(140, 201, 80, 0.15);
+  background-color: rgba(140, 201, 80, 0.1);
   padding: 5px 10px;
   border-radius: 5px;
   color: var(--primary-color);
   font-weight: 500;
   letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
 }
 
-.book-genre::before {
-  content: '';
+/* Add hover button */
+.book-actions {
   position: absolute;
-  top: 0;
-  left: -100%;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(140, 201, 80, 0.2), 
-    transparent);
-  animation: shimmer 2s infinite;
+  height: 0;
+  background: rgba(10, 10, 10, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: var(--transition);
+  backdrop-filter: blur(5px);
 }
 
-.book-card:hover .book-genre::before {
+.book-card:hover .book-actions {
   opacity: 1;
+  height: 60px;
+}
+
+.read-btn {
+  background-color: var(--primary-color);
+  color: var(--darker-bg);
+  border: none;
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.read-btn:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
 }
 
 .loader {
@@ -602,7 +446,6 @@ h1 {
   height: 50px;
   animation: spin 1s linear infinite;
   margin: 0 auto;
-  box-shadow: var(--primary-glow);
 }
 
 @keyframes spin {
@@ -643,7 +486,6 @@ h1 {
   font-size: 5rem;
   color: rgba(140, 201, 80, 0.3);
   margin-bottom: 25px;
-  text-shadow: var(--primary-glow);
 }
 
 .empty-state p {
@@ -656,23 +498,10 @@ h1 {
   text-align: center;
   margin-top: 60px;
   padding-top: 20px;
-  border-top: 1px solid rgba(140, 201, 80, 0.2);
+  border-top: 1px solid var(--glass-border);
   color: #777;
   font-size: 0.9rem;
   position: relative;
-}
-
-.copyright::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70px;
-  height: 5px;
-  background-color: var(--primary-color);
-  border-radius: 2px;
-  opacity: 0.5;
 }
 
 @media (max-width: 768px) {

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="sidebar.css" />
     <link rel="stylesheet" href="modal.css" />
     <link rel="stylesheet" href="widget.css" />
+    <link rel="stylesheet" href="highlighter.css" />
     <title>PageFlow</title>
     <script
       src="https://kit.fontawesome.com/a076d05399.js"
@@ -125,6 +126,18 @@
             <img src="images/star.png" alt="Bookmark" class="control-icon" />
           </button>
         </div>
+        <!-- Highlighter Control -->
+        <div class="highlighter-control">
+          <button
+            id="highlight-btn"
+            class="control-button highlighter-btn"
+            onclick="toggleHighlighter()"
+            title="Highlight Text"
+            disabled
+          >
+            <img src="images/highlighter.png" alt="Highlighter" class="control-icon" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -159,6 +172,7 @@
     <script src="js/navigation.js"></script>
     <script src="js/zoom.js"></script>
     <script src="js/bookmarks.js"></script>
+    <script src="js/highlighter.js"></script>
     <script src="js/core.js"></script>
     <!-- Floating AI Widget -->
     <div id="aiWidget" class="floating-widget">

@@ -59,7 +59,8 @@
 
 .zoom-controls,
 .page-controls,
-.bookmark-control {
+.bookmark-control,
+.highlighter-control {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -72,6 +73,10 @@
 
 .bookmark-control {
     background: #8CC950;
+}
+
+.highlighter-control {
+    background: #8CC950; /* Gold color for highlighter */
 }
 
 .control-button {
@@ -152,4 +157,64 @@
 .bookmark-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ______________Highlighter____________ */
+.highlighter-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.highlighter-control .control-button:hover {
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.85)) brightness(1.3);
+    transform: scale(1.15);
+}
+
+/* Color picker styles */
+.color-picker-modal {
+    display: none;
+    position: absolute;
+    background: rgba(41, 41, 41, 0.95);
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1002;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.color-option {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.color-option:hover {
+    transform: scale(1.15);
+}
+
+.color-option.selected {
+    border-color: white;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+/* Highlight box styling */
+.highlight-box {
+    position: absolute;
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.5;
+}
+
+.highlight-active {
+    cursor: crosshair !important;
+}
+
+.highlighter-control.active {
+    background: #FFB700; /* Darker gold when active */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }

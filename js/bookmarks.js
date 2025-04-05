@@ -3,10 +3,7 @@ function updateBookmarkButton(currentPage) {
 
   const totalPages = $(".flipbook").turn("pages");
   const isCoverPage =
-    currentPage === 1 ||
-    currentPage === 2 ||
-    currentPage === totalPages ||
-    currentPage === totalPages - 1;
+    currentPage === 1 || currentPage === totalPages;
 
   $("#bookmarkBtn").prop("disabled", isCoverPage);
 }
@@ -17,10 +14,7 @@ function toggleBookmark() {
   const currentPage = parseInt($("#pageInput").val());
   const totalPages = $(".flipbook").turn("pages");
   const isCoverPage =
-    currentPage === 1 ||
-    currentPage === 2 ||
-    currentPage === totalPages ||
-    currentPage === totalPages - 1;
+    currentPage === 1 || currentPage === totalPages;
 
   if (isCoverPage) {
     alert("Cannot bookmark cover pages");
