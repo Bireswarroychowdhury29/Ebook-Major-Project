@@ -298,23 +298,22 @@
     word-break: break-word; /* Prevents words from overflowing */
 }
   
-  .tts-play-btn {
-    background-color: #63c568;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background-image: url('images/sound-wave.png');
-    background-size: 60%; /* Adjust this value to control image size */
-    background-repeat: no-repeat;
-    background-position: center;
+.tts-play-btn {
+  background-color: #63c568;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-repeat: no-repeat;
+  background-position: center;
 }
+
   
   .tts-play-btn:hover {
     background-color: #3e9342;

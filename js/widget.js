@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Function for Text-to-Speech
 function textToSpeech() {
     console.log("Text-to-speech function called");
 
@@ -92,7 +91,9 @@ function textToSpeech() {
 
     const playBtn = document.createElement("button");
     playBtn.className = "tts-play-btn";
-    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+
+    // Keep the image constant - this is the key fix
+    playBtn.innerHTML = `<img src='images/mic.png' style='height:20px; width:20px'/>`;
 
     playBtn.addEventListener("click", function() {
         const text = textarea.value.trim();
@@ -109,12 +110,9 @@ function textToSpeech() {
 
             // Speak the text
             speechSynthesis.speak(utterance);
-
-            // Toggle button icon
-            this.innerHTML = '<i class="fas fa-volume-up"></i>';
-            utterance.onend = () => {
-                this.innerHTML = '<i class="fas fa-play"></i>';
-            };
+            
+            // We don't change the button content anymore
+            // Just keep the mic image as is
         }
     });
 
