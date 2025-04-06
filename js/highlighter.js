@@ -6,6 +6,7 @@ let highlighting = false;
 let currentHighlightBox = null;
 let currentHighlightPage = null; // Track which page is being highlighted
 let highlights = {};  // Store highlights by page number
+let activeHighlight = null; // Track currently selected highlight for deletion
 
 // Colors for the highlighter
 const highlightColors = [
@@ -82,6 +83,9 @@ function toggleHighlighter() {
     
     // Remove event listeners for highlighting
     removeHighlightListeners();
+    
+    // Cleanup any active highlight menu
+    removeDeleteMenu();
   }
 }
 
@@ -109,8 +113,115 @@ function removeHighlightListeners() {
   document.removeEventListener("mouseup", endHighlight);
 }
 
+// Create delete menu for highlights
+function createDeleteMenu(highlight) {
+  // Remove any existing delete menu
+  removeDeleteMenu();
+  
+  const deleteMenu = document.createElement("div");
+  deleteMenu.className = "highlight-delete-menu";
+  deleteMenu.id = "highlightDeleteMenu";
+  
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "highlight-delete-btn";
+  deleteBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
+  deleteBtn.title = "Delete highlight";
+  
+  // Add specific handler for the delete button
+  deleteBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (highlight) {
+      deleteHighlight(highlight);
+    }
+    return false;
+  });
+  
+  deleteMenu.appendChild(deleteBtn);
+  
+  // Position menu in the top-right corner of the highlight
+  const highlightRect = highlight.getBoundingClientRect();
+  
+  // Get position relative to the page, not the viewport
+  deleteMenu.style.position = "absolute";
+  deleteMenu.style.left = `${parseInt(highlight.style.left) + parseInt(highlight.style.width) - 20}px`;
+  deleteMenu.style.top = `${parseInt(highlight.style.top) - 10}px`;
+  
+  // Important: Make sure we're appending to the right parent
+  if (highlight.parentNode) {
+    highlight.parentNode.appendChild(deleteMenu);
+  }
+  
+  // Make the menu clickable
+  deleteMenu.style.pointerEvents = "auto";
+  deleteBtn.style.pointerEvents = "auto";
+}
+
+// Remove delete menu
+function removeDeleteMenu() {
+  const existingMenu = document.getElementById("highlightDeleteMenu");
+  if (existingMenu && existingMenu.parentNode) {
+    existingMenu.parentNode.removeChild(existingMenu);
+  }
+  
+  // Clear active highlight reference
+  if (activeHighlight) {
+    activeHighlight.classList.remove("highlight-active");
+    activeHighlight = null;
+  }
+}
+
+// Delete highlight
+function deleteHighlight(highlightElement) {
+  if (!highlightElement) return;
+  
+  const pageElement = highlightElement.closest('.page');
+  if (!pageElement) return;
+  
+  const pageWrapper = pageElement.closest('.page-wrapper');
+  if (!pageWrapper) return;
+  
+  const pageNumber = parseInt(pageWrapper.getAttribute("page"));
+  
+  // Find the highlight in the stored highlights
+  if (highlights[pageNumber]) {
+    // Get position and dimensions of the highlight
+    const highlightLeft = highlightElement.style.left;
+    const highlightTop = highlightElement.style.top;
+    const highlightWidth = highlightElement.style.width;
+    const highlightHeight = highlightElement.style.height;
+    
+    // Filter out the highlight that matches these dimensions
+    highlights[pageNumber] = highlights[pageNumber].filter(h => 
+      h.left !== highlightLeft || 
+      h.top !== highlightTop || 
+      h.width !== highlightWidth || 
+      h.height !== highlightHeight
+    );
+    
+    // Save the updated highlights
+    saveHighlights();
+  }
+  
+  // Remove the highlight element from the DOM
+  if (highlightElement && highlightElement.parentNode) {
+    highlightElement.parentNode.removeChild(highlightElement);
+  }
+  
+  // Remove the delete menu
+  removeDeleteMenu();
+}
+
 // Start highlighting
 function startHighlight(e) {
+  // Check if we're interacting with a delete menu
+  if (e.target.closest('.highlight-delete-menu') || 
+      e.target.classList.contains('highlight-delete-btn') ||
+      e.target.closest('.highlight-delete-btn')) {
+    return; // Don't do anything when clicking on delete menu
+  }
+  
+  // Check if the highlighter is active
   if (!isHighlighterActive) return;
   
   // Check if we're on a valid page for highlighting
@@ -121,6 +232,26 @@ function startHighlight(e) {
   if (pageNumber === 1 || pageNumber === $('.flipbook').turn('pages')) {
     return;
   }
+  
+  // Check if the click was on a highlight element (for deletion)
+  if (e.target.classList.contains("highlight-box")) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Set as active highlight
+    if (activeHighlight) {
+      activeHighlight.classList.remove("highlight-active");
+    }
+    activeHighlight = e.target;
+    activeHighlight.classList.add("highlight-active");
+    
+    // Show delete menu
+    createDeleteMenu(e.target);
+    return;
+  }
+  
+  // Remove delete menu when clicking elsewhere
+  removeDeleteMenu();
   
   highlighting = true;
   currentHighlightPage = pageNumber;
@@ -139,6 +270,9 @@ function startHighlight(e) {
   currentHighlightBox.style.position = "absolute";
   currentHighlightBox.style.left = `${startX}px`;
   currentHighlightBox.style.top = `${startY}px`;
+  currentHighlightBox.style.width = "0px";
+  currentHighlightBox.style.height = "0px";
+  currentHighlightBox.style.pointerEvents = "auto"; // Ensure it's clickable
   
   // Add to the current page
   pageElement.appendChild(currentHighlightBox);
@@ -176,7 +310,7 @@ function moveHighlight(e) {
 }
 
 // End highlighting
-function endHighlight() {
+function endHighlight(e) {
   if (!highlighting || !isHighlighterActive) return;
   
   highlighting = false;
@@ -191,13 +325,34 @@ function endHighlight() {
       highlights[currentHighlightPage] = [];
     }
     
-    // Add highlight to page
-    highlights[currentHighlightPage].push({
+    // Store highlight data
+    const highlightData = {
       color: selectedColor,
       left: currentHighlightBox.style.left,
       top: currentHighlightBox.style.top,
       width: currentHighlightBox.style.width,
       height: currentHighlightBox.style.height
+    };
+    
+    // Add highlight to storage
+    highlights[currentHighlightPage].push(highlightData);
+    
+    // Make highlight clickable - crucial to add this event here
+    currentHighlightBox.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Set as active highlight
+      if (activeHighlight) {
+        activeHighlight.classList.remove("highlight-active");
+      }
+      activeHighlight = this;
+      activeHighlight.classList.add("highlight-active");
+      
+      // Show delete menu
+      createDeleteMenu(this);
+      
+      return false;
     });
     
     // Save highlights to localStorage
@@ -235,7 +390,7 @@ function loadHighlights() {
 function getBookId() {
   // This should be adapted to your application's way of identifying books
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('book') || document.getElementById('bookTitle').dataset.bookId;
+  return urlParams.get('book') || document.getElementById('bookTitle')?.dataset?.bookId || 'default-book';
 }
 
 // Apply highlights to current page
@@ -250,10 +405,30 @@ function applyHighlightsToPage(pageNumber) {
     const highlightDiv = document.createElement("div");
     highlightDiv.className = "highlight-box";
     highlightDiv.style.backgroundColor = highlight.color;
+    highlightDiv.style.position = "absolute";
     highlightDiv.style.left = highlight.left;
     highlightDiv.style.top = highlight.top;
     highlightDiv.style.width = highlight.width;
     highlightDiv.style.height = highlight.height;
+    highlightDiv.style.pointerEvents = "auto"; // Ensure it's clickable
+    
+    // Add click event to the highlight box - crucial for loaded highlights
+    highlightDiv.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Set as active highlight
+      if (activeHighlight) {
+        activeHighlight.classList.remove("highlight-active");
+      }
+      activeHighlight = this;
+      activeHighlight.classList.add("highlight-active");
+      
+      // Show delete menu
+      createDeleteMenu(this);
+      
+      return false;
+    });
     
     pageElement.appendChild(highlightDiv);
   });
@@ -264,6 +439,8 @@ function updateHighlighterState() {
   const currentPage = $('.flipbook').turn('page');
   const totalPages = $('.flipbook').turn('pages');
   const highlighterBtn = document.getElementById("highlight-btn");
+  
+  if (!highlighterBtn) return;
   
   // Disable on first page (cover)
   if (currentPage === 1) {
@@ -280,10 +457,66 @@ function updateHighlighterState() {
   }
 }
 
+// Add CSS styles for the highlight interactions
+function addHighlightStyles() {
+  // Check if styles already exist
+  if (document.getElementById("highlight-styles")) return;
+  
+  const styleSheet = document.createElement("style");
+  styleSheet.id = "highlight-styles";
+  styleSheet.type = "text/css";
+  styleSheet.innerHTML = `
+    .highlight-box {
+      position: absolute;
+      opacity: 0.5;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+      pointer-events: auto;
+    }
+    .highlight-box:hover {
+      opacity: 0.7;
+    }
+    .highlight-box.highlight-active {
+      opacity: 0.7;
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
+    }
+    .highlight-delete-menu {
+      position: absolute;
+      z-index: 100;
+      pointer-events: auto;
+    }
+    .highlight-delete-btn {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      pointer-events: auto;
+    }
+    .highlight-delete-btn:hover {
+      background-color: #f5f5f5;
+    }
+    .highlight-delete-btn svg {
+      pointer-events: none;
+    }
+  `;
+  document.head.appendChild(styleSheet);
+}
+
 // Initialize highlighter
 function initHighlighter() {
   // Create color picker
   createColorPicker();
+  
+  // Add highlight styles
+  addHighlightStyles();
   
   // Load saved highlights
   loadHighlights();
@@ -291,6 +524,9 @@ function initHighlighter() {
   // Set up page turn event to apply highlights and update button state
   $('.flipbook').bind('turned', function(event, page, view) {
     updateHighlighterState();
+    
+    // Remove any active delete menu when turning pages
+    removeDeleteMenu();
     
     // Apply highlights to visible pages
     if (view && view.length) {
@@ -302,9 +538,35 @@ function initHighlighter() {
     }
   });
   
+  // Handle clicks outside of highlights to dismiss delete menu
+  document.addEventListener('click', function(e) {
+    // Don't dismiss if clicking on highlight or delete menu
+    if (e.target.classList.contains('highlight-box') || 
+        e.target.closest('.highlight-delete-menu') ||
+        e.target.classList.contains('highlight-delete-btn')) {
+      return;
+    }
+    
+    removeDeleteMenu();
+  });
+  
   // Initialize highlighter state
   updateHighlighterState();
+  
+  // Apply initial highlights to current visible pages
+  const currentView = $('.flipbook').turn('view');
+  if (currentView && currentView.length) {
+    currentView.forEach(pageNum => {
+      if (pageNum > 0 && pageNum !== 1) {
+        applyHighlightsToPage(pageNum);
+      }
+    });
+  }
 }
 
 // Initialize when document is ready
-document.addEventListener("DOMContentLoaded", initHighlighter);
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  setTimeout(initHighlighter, 1);
+} else {
+  document.addEventListener("DOMContentLoaded", initHighlighter);
+}
