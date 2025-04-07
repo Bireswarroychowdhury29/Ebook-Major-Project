@@ -18,7 +18,7 @@ function toggleSidebar() {
       '<img src="images/cross.png" alt="Close" style="width: 30px; height: 30px;">';
   } else {
     navToggle.innerHTML =
-      '<img src="images/burger.png" alt="Menu" style="width: 20px; height: 20px;">';
+      '<img src="images/burger.png" alt="Menu" style="width: 30px; height: 30px;">';
   }
 }
 

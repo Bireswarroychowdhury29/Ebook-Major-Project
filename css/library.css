@@ -333,7 +333,7 @@ body {
   transform: translateY(-8px);
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3), var(--neon-glow); /* Added neon glow */
   background-color: var(--card-hover);
-  border-color: rgba(136, 208, 64, 0.4); /* Enhanced border color */
+  border-color: rgb(8, 72, 0); /* Enhanced border color */
 }
 
 .book-cover {
