@@ -564,6 +564,70 @@ function initHighlighter() {
   }
 }
 
+// Function to display all highlights in a modal
+function displayHighlights() {
+  if (!bookLoaded) return;
+
+  const highlightModalBody = document.getElementById("highlightModalBody");
+  highlightModalBody.innerHTML = "";
+
+  // Get the book ID
+  const bookId = getBookId();
+  
+  // Load highlights for this book
+  loadHighlights();
+
+  let hasHighlights = false;
+  let highlightHTML = '<ul class="highlight-list">';
+
+  // Group highlights by page number
+  const pageNumbers = Object.keys(highlights).sort((a, b) => parseInt(a) - parseInt(b));
+  
+  if (pageNumbers.length > 0) {
+    hasHighlights = true;
+    
+    pageNumbers.forEach(pageNum => {
+      const pageHighlights = highlights[pageNum];
+      if (pageHighlights && pageHighlights.length > 0) {
+        // For each page with highlights, create an entry
+        // Use the first highlight's color as the indicator
+        const firstHighlightColor = pageHighlights[0].color;
+        
+        highlightHTML += `
+          <li class="highlight-item" id="highlight-item-${pageNum}">
+            <div class="highlight-item-info">
+              <span class="highlight-color-indicator" style="background-color: ${firstHighlightColor};"></span>
+              <span class="highlight-page-number">Page ${pageNum}</span>
+              <span class="highlight-count">(${pageHighlights.length} highlight${pageHighlights.length > 1 ? 's' : ''})</span>
+            </div>
+            <div class="highlight-actions">
+              <button class="highlight-goto" onclick="goToPageNumber(${pageNum})">Go to page</button>
+            </div>
+          </li>
+        `;
+      }
+    });
+  }
+
+  highlightHTML += "</ul>";
+
+  if (!hasHighlights) {
+    highlightModalBody.innerHTML =
+  '<div class="no-highlights-message">No highlighted content found in this document. Use the highlighter tool from the controls panel to mark important sections.</div>';
+  } else {
+    highlightModalBody.innerHTML = highlightHTML;
+  }
+
+  // Show the modal
+  document.getElementById("highlightModal").style.display = "flex";
+}
+
+// Function to close the highlight modal
+function closeHighlightModal() {
+  document.getElementById("highlightModal").style.display = "none";
+}
+
+
 // Initialize when document is ready
 if (document.readyState === "complete" || document.readyState === "interactive") {
   setTimeout(initHighlighter, 1);

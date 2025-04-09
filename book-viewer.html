@@ -42,6 +42,9 @@
       <a href="#" id="bookmarksMenu"
         ><i class="fas fa-list"></i>View Bookmarks</a
       >
+      <a href="#" id="highlightsMenu" onclick="displayHighlights()">
+        <i class="fas fa-highlighter"></i>View Highlights
+      </a>
       <a href="#" onclick="goToPageNumber($('.flipbook').turn('pages'))"
         ><i class="fas fa-fast-forward"></i>Last Page</a
       >
@@ -158,6 +161,24 @@
         </div>
       </div>
     </div>
+
+    <!-- Highlights Modal -->
+  <div class="highlight-modal" id="highlightModal">
+  <div class="highlight-modal-content">
+    <div class="highlight-modal-header">
+      <h2 class="highlight-modal-title">Your Highlights</h2>
+      <button class="highlight-modal-close" onclick="closeHighlightModal()">
+        &times;
+      </button>
+    </div>
+    <div class="highlight-modal-body" id="highlightModalBody">
+      <!-- Highlight list will be populated here -->
+    </div>
+    <div class="highlight-modal-footer">
+      <button onclick="closeHighlightModal()">Close</button>
+    </div>
+  </div>
+  </div>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">

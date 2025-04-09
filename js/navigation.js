@@ -29,6 +29,7 @@ function goToPageNumber(page) {
   }
   if (document.getElementById("bookmarkModal").style.display === "flex") {
     closeBookmarkModal();
+    closeHighlightModal();
   }
 }
 
@@ -145,3 +146,8 @@ function updatePageTurnButtonPositions() {
     }
   }
 }
+// Add event listener for highlights menu
+document.getElementById("highlightsMenu").addEventListener("click", function(e) {
+  e.preventDefault();
+  displayHighlights();
+});
