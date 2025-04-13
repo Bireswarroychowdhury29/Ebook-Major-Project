@@ -1,100 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PageFlow</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="css/library.css">
-</head>
-<body>
-  <!-- Floating Navbar -->
-  <nav class="navbar floating">
-    <div class="navbar-logo">
-      <img src="images/logo.png" alt="PageFlow Logo" class="logo" height="40px" width="40px">
-      <span>PageFlow</span>
-    </div>
-    
-    <div class="navbar-links">
-      <a href="#" class="nav-link">Browse</a>
-      <a href="#" class="nav-link">Collections</a>
-      <a href="#" class="nav-link">Authors</a>
-      <a href="#" class="nav-link">Blog</a>
-      <a href="#" class="nav-link">About</a>
-    </div>
-    
-    <!-- Search Bar integrated into Navbar -->
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Discover your next read...">
-      <button id="searchBtn"><i class="fas fa-search"></i></button>
-    </div>
-    
-    <div class="navbar-actions">
-      <a href="#" class="login-btn">Log In</a>
-      <a href="#" class="signup-btn">Sign Up</a>
-    </div>
-    
-    <div class="hamburger-menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PageFlow</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/library.css" />
+  </head>
+  <body>
+    <!-- Floating Navbar -->
+    <nav class="navbar floating">
+      <div class="navbar-logo">
+        <img
+          src="images/logo.png"
+          alt="PageFlow Logo"
+          class="logo"
+          height="40px"
+          width="40px"
+        />
+        <span>PageFlow</span>
+      </div>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="search-container mobile">
-      <input type="text" id="mobileSearchInput" placeholder="Discover your next read...">
-      <button id="mobileSearchBtn"><i class="fas fa-search"></i></button>
-    </div>
-    
-    <div class="mobile-links">
-      <a href="#" class="mobile-link">Browse</a>
-      <a href="#" class="mobile-link">Collections</a>
-      <a href="#" class="mobile-link">Authors</a>
-      <a href="#" class="mobile-link">Blog</a>
-      <a href="#" class="mobile-link">About</a>
-    </div>
-    
-    <div class="mobile-actions">
-      <a href="#" class="login-btn">Log In</a>
-      <a href="#" class="signup-btn">Sign Up</a>
-    </div>
-  </div>
+      <div class="navbar-links">
+        <a href="#" class="nav-link">Browse</a>
+        <a href="#" class="nav-link">Collections</a>
+        <a href="#" class="nav-link">Authors</a>
+        <a href="#" class="nav-link">Blog</a>
+        <a href="#" class="nav-link">About</a>
+      </div>
 
-  <div class="container">
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">All Books</button>
-      <button class="filter-btn" data-filter="fiction">Fiction</button>
-      <button class="filter-btn" data-filter="non-fiction">Non-Fiction</button>
-      <button class="filter-btn" data-filter="children">Children's</button>
-      <button class="filter-btn" data-filter="mystery">Mystery</button>
-      <button class="filter-btn" data-filter="science">Science</button>
-    </div>
+      <!-- Search Bar integrated into Navbar -->
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Discover your next read..."
+        />
+        <button id="searchBtn"><i class="fas fa-search"></i></button>
+      </div>
 
-    <div class="books-grid" id="booksGrid">
-      <!-- Books will be populated here by JavaScript -->
-    </div>
+      <div class="navbar-actions">
+        <a href="#" class="login-btn">Log In</a>
+        <a href="#" class="signup-btn">Sign Up</a>
+      </div>
 
-    <div class="loader" id="loader">
-      <div class="spinner"></div>
-      <p>Loading your literary universe...</p>
+      <div class="hamburger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="search-container mobile">
+        <input
+          type="text"
+          id="mobileSearchInput"
+          placeholder="Discover your next read..."
+        />
+        <button id="mobileSearchBtn"><i class="fas fa-search"></i></button>
+      </div>
+
+      <div class="mobile-links">
+        <a href="#" class="mobile-link">Browse</a>
+        <a href="#" class="mobile-link">Collections</a>
+        <a href="#" class="mobile-link">Authors</a>
+        <a href="#" class="mobile-link">Blog</a>
+        <a href="#" class="mobile-link">About</a>
+      </div>
+
+      <div class="mobile-actions">
+        <a href="#" class="login-btn">Log In</a>
+        <a href="#" class="signup-btn">Sign Up</a>
+      </div>
     </div>
 
-    <div class="error-message" id="errorMessage">
-      <p>Oops! Something went wrong while fetching the books. Please try again later.</p>
+    <div class="container">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Books</button>
+        <button class="filter-btn" data-filter="fiction">Fiction</button>
+        <button class="filter-btn" data-filter="non-fiction">
+          Non-Fiction
+        </button>
+        <button class="filter-btn" data-filter="children">Children's</button>
+        <button class="filter-btn" data-filter="mystery">Mystery</button>
+        <button class="filter-btn" data-filter="science">Science</button>
+      </div>
+
+      <div class="books-grid" id="booksGrid">
+        <!-- Books will be populated here by JavaScript -->
+      </div>
+
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <p>Loading your literary universe...</p>
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        <p>
+          Oops! Something went wrong while fetching the books. Please try again
+          later.
+        </p>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <i class="fas fa-book-open"></i>
+        <p>No books found matching your criteria</p>
+      </div>
+
+      <footer class="copyright">
+        <p>&copy; 2025 PageFlow. All rights reserved.</p>
+      </footer>
     </div>
 
-    <div class="empty-state" id="emptyState">
-      <i class="fas fa-book-open"></i>
-      <p>No books found matching your criteria</p>
-    </div>
-    
-    <footer class="copyright">
-      <p>&copy; 2025 PageFlow. All rights reserved.</p>
-    </footer>
-  </div>
-
-  <script src="js/library.js"></script>
-</body>
+    <script src="js/library.js"></script>
+  </body>
 </html>
