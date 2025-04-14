@@ -1,45 +1,14 @@
-// Replace entire config.js content with:
-let API_KEY = null;
+// Gemini API configuration
+let API_KEY = "AIzaSyAWdbzn-4YYsxo2kfPLxKt-LZRYuBAO8QE";
+window.GEMINI_API_KEY = API_KEY;
 
 function initializeAPIKey() {
     console.log("Initializing API key...");
     
     return new Promise((resolve, reject) => {
-        // Try to get the API key from window.GEMINI_API_KEY
-        if (window.GEMINI_API_KEY) {
-            console.log("Found API key from window.GEMINI_API_KEY");
-            API_KEY = window.GEMINI_API_KEY;
-            resolve(true);
-            return;
-        }
-        
-        // Try to get API key from server
-        fetch('/api/config/gemini-key')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to get API key from server');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.key) {
-                    console.log("Retrieved API key from server");
-                    API_KEY = data.key;
-                    resolve(true);
-                } else {
-                    // Fallback for development only - replace in production!
-                    console.warn("Using hardcoded API key as fallback - FOR DEV ONLY");
-                    API_KEY = "AIzaSyAWdbzn-4YYsxo2kfPLxKt-LZRYuBAO8QE";
-                    resolve(true);
-                }
-            })
-            .catch(error => {
-                console.error("Error retrieving API key:", error);
-                // Fallback for development only - replace in production!
-                console.warn("Using hardcoded API key as fallback - FOR DEV ONLY");
-                API_KEY = "AIzaSyAWdbzn-4YYsxo2kfPLxKt-LZRYuBAO8QE";
-                resolve(true);
-            });
+        // Already have the API key directly in the code
+        console.log("Using configured API key");
+        resolve(true);
     });
 }
 
@@ -50,12 +19,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         console.log("API key initialization complete");
     } catch (error) {
         console.error("Failed to initialize API key:", error);
-        showPopup("API Key Error", "The application couldn't find a valid API key. Book summarization may not work. Please check your configuration.");
+        showPopup("API Key Error", "The application couldn't find a valid API key. Some features may not work. Please check your configuration.");
     }
 });
 
 // Helper function to show error popup
 function showPopup(title, message) {
+    // Check if we have a custom showPopup function in widget.js
+    if (typeof window.showPopup === 'function') {
+        window.showPopup(title, message);
+        return;
+    }
+    
     // Create popup if doesn't exist
     let popup = document.createElement('div');
     popup.className = 'popup-message';
