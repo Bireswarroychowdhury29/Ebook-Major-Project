@@ -33,6 +33,17 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("Dictionary button not found!");
     }
+    
+    // NEW: Initialize ChatBase container
+    initializeChatBase();
+    
+    // NEW: Set up chat assistant button
+    const chatAssistant = document.getElementById('chatAssistant');
+    if (chatAssistant) {
+        chatAssistant.addEventListener('click', toggleChatbase);
+    } else {
+        console.error("Chat Assistant element not found!");
+    }
 });
 
 function textToSpeech() {
@@ -426,9 +437,8 @@ function showPopup(title, content) {
     }
 }
 
-// Add this code to your js/widget.js file or create a new chatbase.js file
-
-document.addEventListener("DOMContentLoaded", function() {
+// MODIFIED: Separate the ChatBase initialization and handling
+function initializeChatBase() {
     // Create the ChatBase widget container
     const chatbaseContainer = document.createElement('div');
     chatbaseContainer.id = 'chatbaseContainer';
@@ -454,34 +464,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add to the document
     document.body.appendChild(chatbaseContainer);
     
-    // Set up the chat toggle button
-    const aiWidget = document.getElementById('aiWidget');
-    if (aiWidget) {
-        // Add chat option to widget menu
-        const widgetMenu = document.getElementById('aiWidgetMenu');
-        if (widgetMenu) {
-            const chatButton = document.createElement('button');
-            chatButton.id = 'chatMenuOption';
-            chatButton.innerHTML = `
-                <img src="images/chat.png" alt="" style="width: 16px; height: 16px; margin-right: 5px" />
-                Ask Assistant
-            `;
-            chatButton.addEventListener('click', toggleChatbase);
-            widgetMenu.appendChild(chatButton);
-        }
-        
-        // Direct widget click to toggle chat
-        document.getElementById('aiWidgetIcon').addEventListener('click', function(e) {
-            // If widgetMenu is being shown, don't also open the chat
-            if (document.getElementById('aiWidgetMenu').style.display !== 'block') {
-                toggleChatbase();
-            }
-        });
-    }
-    
     // Add close button functionality
     document.getElementById('closeChatbaseBtn').addEventListener('click', toggleChatbase);
-});
+}
 
 // Toggle the ChatBase chat window
 function toggleChatbase() {
