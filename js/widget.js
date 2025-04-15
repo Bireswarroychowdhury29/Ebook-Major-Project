@@ -425,3 +425,70 @@ function showPopup(title, content) {
         alert(`${title}\n\n${content}`);
     }
 }
+
+// Add this code to your js/widget.js file or create a new chatbase.js file
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Create the ChatBase widget container
+    const chatbaseContainer = document.createElement('div');
+    chatbaseContainer.id = 'chatbaseContainer';
+    chatbaseContainer.className = 'chatbase-container';
+    chatbaseContainer.style.display = 'none'; // Hidden by default
+    
+    // Set up the iframe from ChatBase
+    chatbaseContainer.innerHTML = `
+        <div class="chatbase-header">
+            <span>PageFlow Assistant</span>
+            <button id="closeChatbaseBtn" class="chatbase-close-btn">&times;</button>
+        </div>
+        <div class="chatbase-content">
+            <iframe
+                src="https://www.chatbase.co/chatbot-iframe/Fhpzk5d3aidzMpwKg5FGl"
+                width="100%"
+                height="100%"
+                frameborder="0"
+            ></iframe>
+        </div>
+    `;
+    
+    // Add to the document
+    document.body.appendChild(chatbaseContainer);
+    
+    // Set up the chat toggle button
+    const aiWidget = document.getElementById('aiWidget');
+    if (aiWidget) {
+        // Add chat option to widget menu
+        const widgetMenu = document.getElementById('aiWidgetMenu');
+        if (widgetMenu) {
+            const chatButton = document.createElement('button');
+            chatButton.id = 'chatMenuOption';
+            chatButton.innerHTML = `
+                <img src="images/chat.png" alt="" style="width: 16px; height: 16px; margin-right: 5px" />
+                Ask Assistant
+            `;
+            chatButton.addEventListener('click', toggleChatbase);
+            widgetMenu.appendChild(chatButton);
+        }
+        
+        // Direct widget click to toggle chat
+        document.getElementById('aiWidgetIcon').addEventListener('click', function(e) {
+            // If widgetMenu is being shown, don't also open the chat
+            if (document.getElementById('aiWidgetMenu').style.display !== 'block') {
+                toggleChatbase();
+            }
+        });
+    }
+    
+    // Add close button functionality
+    document.getElementById('closeChatbaseBtn').addEventListener('click', toggleChatbase);
+});
+
+// Toggle the ChatBase chat window
+function toggleChatbase() {
+    const chatbaseContainer = document.getElementById('chatbaseContainer');
+    if (chatbaseContainer.style.display === 'none') {
+        chatbaseContainer.style.display = 'flex';
+    } else {
+        chatbaseContainer.style.display = 'none';
+    }
+}
