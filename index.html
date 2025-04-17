@@ -24,12 +24,14 @@
         <span>PageFlow</span>
       </div>
 
-      <div class="navbar-links">
-        <a href="#" class="nav-link">Browse</a>
-        <a href="#" class="nav-link">Collections</a>
-        <a href="#" class="nav-link">Authors</a>
-        <a href="#" class="nav-link">Blog</a>
-        <a href="#" class="nav-link">About</a>
+      <!-- Category buttons moved to navbar -->
+      <div class="navbar-categories">
+        <button class="nav-category-btn active" data-filter="all">All Books</button>
+        <button class="nav-category-btn" data-filter="fiction">Fiction</button>
+        <button class="nav-category-btn" data-filter="non-fiction">Non-Fiction</button>
+        <button class="nav-category-btn" data-filter="children">Children's</button>
+        <button class="nav-category-btn" data-filter="mystery">Mystery</button>
+        <button class="nav-category-btn" data-filter="science">Science</button>
       </div>
 
       <!-- Search Bar integrated into Navbar -->
@@ -40,11 +42,6 @@
           placeholder="Discover your next read..."
         />
         <button id="searchBtn"><i class="fas fa-search"></i></button>
-      </div>
-
-      <div class="navbar-actions">
-        <a href="#" class="login-btn">Log In</a>
-        <a href="#" class="signup-btn">Sign Up</a>
       </div>
 
       <div class="hamburger-menu">
@@ -65,31 +62,19 @@
         <button id="mobileSearchBtn"><i class="fas fa-search"></i></button>
       </div>
 
-      <div class="mobile-links">
-        <a href="#" class="mobile-link">Browse</a>
-        <a href="#" class="mobile-link">Collections</a>
-        <a href="#" class="mobile-link">Authors</a>
-        <a href="#" class="mobile-link">Blog</a>
-        <a href="#" class="mobile-link">About</a>
-      </div>
-
-      <div class="mobile-actions">
-        <a href="#" class="login-btn">Log In</a>
-        <a href="#" class="signup-btn">Sign Up</a>
+      <!-- Mobile Category buttons -->
+      <div class="mobile-categories">
+        <button class="mobile-category-btn active" data-filter="all">All Books</button>
+        <button class="mobile-category-btn" data-filter="fiction">Fiction</button>
+        <button class="mobile-category-btn" data-filter="non-fiction">Non-Fiction</button>
+        <button class="mobile-category-btn" data-filter="children">Children's</button>
+        <button class="mobile-category-btn" data-filter="mystery">Mystery</button>
+        <button class="mobile-category-btn" data-filter="science">Science</button>
       </div>
     </div>
 
     <div class="container">
-      <div class="filters">
-        <button class="filter-btn active" data-filter="all">All Books</button>
-        <button class="filter-btn" data-filter="fiction">Fiction</button>
-        <button class="filter-btn" data-filter="non-fiction">
-          Non-Fiction
-        </button>
-        <button class="filter-btn" data-filter="children">Children's</button>
-        <button class="filter-btn" data-filter="mystery">Mystery</button>
-        <button class="filter-btn" data-filter="science">Science</button>
-      </div>
+      <!-- Removed the filters section as it's now in the navbar -->
 
       <div class="books-grid" id="booksGrid">
         <!-- Books will be populated here by JavaScript -->
