@@ -5,7 +5,9 @@ const errorMessage = document.getElementById('errorMessage');
 const emptyState = document.getElementById('emptyState');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
-const filterBtns = document.querySelectorAll('.filter-btn');
+// Updated selectors for the new navbar category buttons
+const navCategoryBtns = document.querySelectorAll('.nav-category-btn');
+const mobileCategoryBtns = document.querySelectorAll('.mobile-category-btn');
 const hamburgerMenu = document.querySelector('.hamburger-menu');
 const mobileMenu = document.getElementById('mobileMenu');
 const mobileSearchInput = document.getElementById('mobileSearchInput');
@@ -132,6 +134,8 @@ function displayBooks(books) {
     return;
   }
 
+  hideEmptyState();
+
   books.forEach((book, index) => {
     const bookCard = document.createElement('div');
     bookCard.className = 'book-card';
@@ -193,6 +197,27 @@ function filterAndDisplayBooks() {
   }, 300);
 }
 
+// Function to update active state across all category buttons
+function updateActiveCategoryButtons(filter) {
+  // Update desktop nav buttons
+  navCategoryBtns.forEach(btn => {
+    if (btn.getAttribute('data-filter') === filter) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  // Update mobile nav buttons
+  mobileCategoryBtns.forEach(btn => {
+    if (btn.getAttribute('data-filter') === filter) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
 // Open the book viewer for the selected book
 function openBookViewer(book) {
   window.location.href = `book-viewer.html?bookPath=${encodeURIComponent(book.filepath)}`;
@@ -240,25 +265,41 @@ searchInput.addEventListener('keyup', (e) => {
 mobileSearchBtn.addEventListener('click', () => {
   searchTerm = mobileSearchInput.value;
   filterAndDisplayBooks();
+  // Close mobile menu after search
+  mobileMenu.classList.remove('active');
+  hamburgerMenu.classList.remove('active');
 });
 
 mobileSearchInput.addEventListener('keyup', (e) => {
   if (e.key === 'Enter') {
     searchTerm = mobileSearchInput.value;
     filterAndDisplayBooks();
+    // Close mobile menu after search
+    mobileMenu.classList.remove('active');
+    hamburgerMenu.classList.remove('active');
   }
 });
 
-// Category filter buttons
-filterBtns.forEach(btn => {
+// Desktop navbar category buttons
+navCategoryBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    // Update active button UI
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    // Update filter and refresh display
-    currentFilter = btn.dataset.filter;
+    const filter = btn.getAttribute('data-filter');
+    currentFilter = filter;
+    updateActiveCategoryButtons(filter);
     filterAndDisplayBooks();
+  });
+});
+
+// Mobile category buttons
+mobileCategoryBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const filter = btn.getAttribute('data-filter');
+    currentFilter = filter;
+    updateActiveCategoryButtons(filter);
+    filterAndDisplayBooks();
+    // Close mobile menu after selection
+    mobileMenu.classList.remove('active');
+    hamburgerMenu.classList.remove('active');
   });
 });
 
@@ -271,4 +312,7 @@ hamburgerMenu.addEventListener('click', () => {
 // Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
   loadStaticBooks(); // Load static book data instead of fetching from MongoDB
+  
+  // Set initial active state for "All Books" buttons
+  updateActiveCategoryButtons('all');
 });
