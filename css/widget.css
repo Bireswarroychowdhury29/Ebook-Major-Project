@@ -12,7 +12,7 @@
 .floating-widget #aiWidgetIcon {
   width: 50px;  
   height: 50px; 
-  border-radius: 50%;
+  border-radius: 25%;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
@@ -44,8 +44,8 @@
 }
 
 .chat-assistant #chatAssistantIcon {
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
