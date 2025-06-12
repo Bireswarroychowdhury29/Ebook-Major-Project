@@ -406,9 +406,27 @@ function getBookId() {
   );
 }
 
+// Clear existing highlights from a page
+function clearHighlightsFromPage(pageNumber) {
+  const pageElement = document.querySelector(
+    `.page-wrapper[page="${pageNumber}"] .page`
+  );
+  
+  if (!pageElement) return;
+  
+  // Remove all existing highlight elements from the page
+  const existingHighlights = pageElement.querySelectorAll('.highlight-box');
+  existingHighlights.forEach(highlight => {
+    highlight.remove();
+  });
+}
+
 // Apply highlights to current page
 function applyHighlightsToPage(pageNumber) {
   if (!highlights[pageNumber]) return;
+
+  // IMPORTANT: Clear existing highlights first to prevent opacity stacking
+  clearHighlightsFromPage(pageNumber);
 
   const pageElement = document.querySelector(
     `.page-wrapper[page="${pageNumber}"] .page`

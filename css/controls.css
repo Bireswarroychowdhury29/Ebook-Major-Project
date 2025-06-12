@@ -217,3 +217,135 @@
     background: #FFB700; /* Darker gold when active */
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
+
+/* Highlighter Color Picker Styles */
+.color-picker-modal {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  gap: 8px;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 3px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.color-option.selected {
+  border-color: #333;
+  transform: scale(1.1);
+}
+
+.color-option:hover {
+  transform: scale(1.15);
+  border-color: #666;
+}
+
+/* Highlight Box Styles */
+.highlight-box {
+  border: 1px solid rgba(0,0,0,0.1);
+  transition: opacity 0.2s ease;
+}
+
+/* Highlighter Button Active State - Yellow when active */
+#highlighterBtn.active {
+  background-color: #FFFF00 !important;
+  border-color: #E6E600 !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+
+#highlighterBtn.active:hover {
+  background-color: #E6E600 !important;
+}
+
+/* Notification Styles for Bookmarks */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 55.25%;
+  transform: translateX(-25%);
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 25%, #7cb342 50%, #aed581 75%, #ffeb3b 100%);
+  color: white;
+  padding: 15px 12px 20px 12px;
+  width: 120px;
+  height: 180px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 999999 !important;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: center;
+  word-wrap: break-word;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
+  pointer-events: none; /* Prevents interaction blocking */
+}
+
+.notification.show {
+  opacity: 1;
+}
+
+/* Bookmark notch styling */
+.notification::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 25px solid inherit;
+}
+
+/* Text layout within bookmark */
+.notification .book-title {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 8px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.notification .page-number {
+  font-size: 11px;
+  margin-bottom: 8px;
+  color: #f0f0f0;
+}
+
+.notification .bookmark-text {
+  font-size: 10px;
+  font-style: italic;
+  color: #ffff88;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Override any potential z-index conflicts */
+.notification {
+  z-index: 999999 !important;
+}
+
+/* Ensure it appears above common high z-index elements */
+.flipbook-container,
+.flipbook,
+.content,
+.controls-container,
+.sidebar {
+  z-index: 1 !important;
+}
+
+/* Make sure modals don't interfere unless they're open */
+.bookmark-modal:not([style*="flex"]) {
+  z-index: -1 !important;
+}

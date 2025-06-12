@@ -1,3 +1,12 @@
+// Zoom and Pan functionality
+let panOffsetX = 0;
+let panOffsetY = 0;
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let panStartOffsetX = 0;
+let panStartOffsetY = 0;
+
 function zoomIn() {
   if (zoomLevel < 2) {
     zoomLevel += 0.2;
@@ -8,15 +17,19 @@ function zoomIn() {
 function zoomOut() {
   if (zoomLevel > 0.6) {
     zoomLevel -= 0.2;
+    // When zooming out, check if we need to reset pan offsets
+    if (zoomLevel <= 1) {
+      panOffsetX = 0;
+      panOffsetY = 0;
+    }
     updateZoom();
   }
 }
 
 function resetZoom() {
   zoomLevel = 1;
-  // Reset any pan offset when zoom is reset
-  resetPanOffset();
-  // Important: Call updateZoom after resetting pan offset
+  panOffsetX = 0;
+  panOffsetY = 0;
   updateZoom();
 }
 
@@ -26,157 +39,215 @@ function updateZoom() {
   // Get the current page to maintain proper positioning
   const currentPage = parseInt($("#pageInput").val());
 
-  // Apply both zoom and position adjustment
+  // Apply both zoom and position adjustment (keep original function)
   adjustFlipbookPosition(currentPage);
+  
+  // Apply pan transform separately to avoid interfering with centering
+  applyPanTransform();
 
   // Update buttons position after zoom
   updatePageTurnButtonPositions();
   
-  // Enable or disable panning based on zoom level
+  // Setup or remove pan functionality based on zoom level
+  setupPanFunctionality();
+}
+
+function setupPanFunctionality() {
+  const flipbook = $(".flipbook");
+  
+  // Remove existing pan event listeners first to avoid duplicates
+  removePanEventListeners();
+  
+  // Only enable panning when zoomed in beyond normal size
   if (zoomLevel > 1) {
-    enablePanning();
-  } else {
-    disablePanning();
-  }
-}
-
-// Pan functionality variables
-let isPanning = false;
-let startX, startY;
-let panOffsetX = 0, panOffsetY = 0;
-let lastPanOffsetX = 0, lastPanOffsetY = 0;
-
-function enablePanning() {
-  const flipbook = $('.flipbook-container');
-  
-  // Only attach events if not already attached
-  if (!flipbook.data('pan-enabled')) {
-    flipbook.on('mousedown touchstart', startPan);
-    $(document).on('mousemove touchmove', pan);
-    $(document).on('mouseup touchend', endPan);
-    flipbook.data('pan-enabled', true);
+    // Add pan event listeners
+    flipbook.on('mousedown.pan', startPan);
+    $(document).on('mousemove.pan', doPan);
+    $(document).on('mouseup.pan', endPan);
     
-    // Set cursor to grab to indicate content can be dragged
-    flipbook.css('cursor', 'grab');
+    // Add cursor styles for panning
+    flipbook.addClass('pan-enabled');
+  } else {
+    // Remove pan capability when at normal zoom
+    flipbook.removeClass('pan-enabled pan-active');
   }
 }
 
-function disablePanning() {
-  const flipbook = $('.flipbook-container');
-  
-  flipbook.off('mousedown touchstart', startPan);
-  $(document).off('mousemove touchmove', pan);
-  $(document).off('mouseup touchend', endPan);
-  flipbook.data('pan-enabled', false);
-  
-  // Reset cursor to default
-  flipbook.css('cursor', 'default');
-}
-
-function resetPanOffset() {
-  panOffsetX = 0;
-  panOffsetY = 0;
-  lastPanOffsetX = 0;
-  lastPanOffsetY = 0;
-  
-  // Reset the transform property
-  const flipbook = $('.flipbook-container');
-  
-  // Remove any translate transformations but keep other styles
-  // Let the original positioning system handle centering
-  flipbook.css({
-    'transform': `scale(${zoomLevel})`,
-    'left': '',
-    'top': ''
-  });
+function removePanEventListeners() {
+  const flipbook = $(".flipbook");
+  flipbook.off('mousedown.pan');
+  $(document).off('mousemove.pan mouseup.pan');
 }
 
 function startPan(e) {
-  // Only pan when zoomed in
+  // Don't start panning if we're not zoomed in enough
   if (zoomLevel <= 1) return;
   
-  e.preventDefault();
+  // Don't start panning if clicking on controls, highlights, or other interactive elements
+  if ($(e.target).closest('.controls, .highlight-box, .highlight-delete-menu, .page-turn-btn, .sidebar').length > 0) {
+    return;
+  }
+  
+  // Don't interfere with highlighter functionality
+  if (isHighlighterActive) return;
+  
   isPanning = true;
+  panStartX = e.clientX;
+  panStartY = e.clientY;
+  panStartOffsetX = panOffsetX;
+  panStartOffsetY = panOffsetY;
   
-  // Get initial touch/mouse position
-  if (e.type === 'touchstart') {
-    startX = e.originalEvent.touches[0].pageX;
-    startY = e.originalEvent.touches[0].pageY;
-  } else {
-    startX = e.pageX;
-    startY = e.pageY;
-  }
+  // Change cursor to grabbing/closed hand
+  $(".flipbook").addClass('pan-active');
   
-  // Store last offset
-  lastPanOffsetX = panOffsetX;
-  lastPanOffsetY = panOffsetY;
-  
-  // Change cursor to grabbing while actively dragging
-  $('.flipbook-container').css('cursor', 'grabbing');
+  // Prevent text selection and other default behaviors
+  e.preventDefault();
 }
 
-function pan(e) {
-  if (!isPanning) return;
+function doPan(e) {
+  if (!isPanning || zoomLevel <= 1) return;
   
-  let currentX, currentY;
+  const deltaX = e.clientX - panStartX;
+  const deltaY = e.clientY - panStartY;
   
-  // Get current touch/mouse position
-  if (e.type === 'touchmove') {
-    currentX = e.originalEvent.touches[0].pageX;
-    currentY = e.originalEvent.touches[0].pageY;
-  } else {
-    currentX = e.pageX;
-    currentY = e.pageY;
-  }
+  // Calculate new pan offsets
+  const newPanOffsetX = panStartOffsetX + deltaX;
+  const newPanOffsetY = panStartOffsetY + deltaY;
   
-  // Calculate new offset
-  const deltaX = currentX - startX;
-  const deltaY = currentY - startY;
+  // Get flipbook container dimensions for boundary checking
+  const flipbookContainer = $(".flipbook-container");
+  const containerWidth = flipbookContainer.width();
+  const containerHeight = flipbookContainer.height();
   
-  panOffsetX = lastPanOffsetX + deltaX;
-  panOffsetY = lastPanOffsetY + deltaY;
+  // Get flipbook dimensions when zoomed
+  const flipbookWidth = 1000 * zoomLevel; // Original width * zoom
+  const flipbookHeight = 650 * zoomLevel; // Original height * zoom
   
-  // Apply the transform
+  // Calculate maximum pan boundaries
+  const maxPanX = Math.max(0, (flipbookWidth - containerWidth) / 2);
+  const maxPanY = Math.max(0, (flipbookHeight - containerHeight) / 2);
+  
+  // Constrain pan offsets to boundaries
+  panOffsetX = Math.max(-maxPanX, Math.min(maxPanX, newPanOffsetX));
+  panOffsetY = Math.max(-maxPanY, Math.min(maxPanY, newPanOffsetY));
+  
+  // Apply the pan transformation separately
   applyPanTransform();
+  
+  e.preventDefault();
 }
 
-function endPan() {
+function endPan(e) {
   if (!isPanning) return;
   
   isPanning = false;
   
-  // Change cursor back to grab to indicate content can be dragged again
-  $('.flipbook-container').css('cursor', 'grab');
+  // Change cursor back to grab/open hand
+  $(".flipbook").removeClass('pan-active');
+  
+  e.preventDefault();
 }
 
+// Apply pan transform separately from the main positioning
 function applyPanTransform() {
-  // Get the flipbook element
-  const flipbook = $('.flipbook-container');
+  if (!bookLoaded) return;
   
-  // Calculate limits to prevent excessive panning
-  const maxPanX = (zoomLevel - 1) * flipbook.width();
-  const maxPanY = (zoomLevel - 1) * flipbook.height();
+  const flipbook = $(".flipbook");
   
-  // Constrain pan within boundaries
-  panOffsetX = Math.max(-maxPanX, Math.min(maxPanX, panOffsetX));
-  panOffsetY = Math.max(-maxPanY, Math.min(maxPanY, panOffsetY));
+  // Get existing transform (from original adjustFlipbookPosition)
+  const existingTransform = flipbook.css("transform") || "";
   
-  // Apply transform
-  // Use a combined transform for both scale and translation
-  flipbook.css('transform', `scale(${zoomLevel}) translate(${panOffsetX/zoomLevel}px, ${panOffsetY/zoomLevel}px)`);
+  // Add pan translation if zoomed in
+  if (zoomLevel > 1 && (panOffsetX !== 0 || panOffsetY !== 0)) {
+    // Extract scale from existing transform or use current zoom level
+    const scaleMatch = existingTransform.match(/scale\(([^)]+)\)/);
+    const currentScale = scaleMatch ? scaleMatch[1] : zoomLevel;
+    
+    // Apply both scale and translate
+    const newTransform = `scale(${currentScale}) translate(${panOffsetX}px, ${panOffsetY}px)`;
+    flipbook.css({
+      "transform": newTransform,
+      "transform-origin": "center center"
+    });
+  } else if (zoomLevel <= 1) {
+    // Reset to original transform when not zoomed in
+    flipbook.css({
+      "transform": `scale(${zoomLevel})`,
+      "transform-origin": "center center"
+    });
+  }
 }
 
-// This function fully resets the book position and zoom
-function fullResetBookPosition() {
-  zoomLevel = 1;
-  resetPanOffset();
+// Add CSS styles for pan functionality
+function addPanStyles() {
+  // Check if pan styles already exist
+  if (document.getElementById("pan-styles")) return;
+
+  const styleSheet = document.createElement("style");
+  styleSheet.id = "pan-styles";
+  styleSheet.type = "text/css";
+  styleSheet.innerHTML = `
+    .flipbook.pan-enabled {
+      cursor: grab;
+      cursor: -webkit-grab;
+    }
+    
+    .flipbook.pan-enabled.pan-active {
+      cursor: grabbing !important;
+      cursor: -webkit-grabbing !important;
+    }
+    
+    .flipbook.pan-enabled * {
+      pointer-events: none;
+    }
+    
+    .flipbook.pan-enabled .highlight-box,
+    .flipbook.pan-enabled .highlight-delete-menu,
+    .flipbook.pan-enabled .highlight-delete-btn {
+      pointer-events: auto;
+    }
+    
+    /* Ensure controls remain interactive */
+    .controls,
+    .page-turn-btn,
+    .sidebar,
+    .modal {
+      pointer-events: auto !important;
+    }
+    
+    .controls *,
+    .page-turn-btn *,
+    .sidebar *,
+    .modal * {
+      pointer-events: auto !important;
+    }
+  `;
+  document.head.appendChild(styleSheet);
+}
+
+// Initialize pan functionality
+function initPanFunctionality() {
+  // Add pan styles
+  addPanStyles();
   
-  // Get the current page
-  const currentPage = parseInt($("#pageInput").val());
+  // Setup initial pan state
+  setupPanFunctionality();
   
-  // Use existing function to properly center the book
-  adjustFlipbookPosition(currentPage);
-  
-  // Update button positions
-  updatePageTurnButtonPositions();
+  // Reset pan offsets when page changes
+  $(".flipbook").bind("turned", function(event, page, view) {
+    // Apply pan transform after page turn to maintain position
+    if (zoomLevel > 1) {
+      // Small delay to ensure page turn animation completes
+      setTimeout(() => {
+        applyPanTransform();
+      }, 100);
+    }
+  });
+}
+
+// Make sure to initialize when document is ready
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  setTimeout(initPanFunctionality, 1);
+} else {
+  document.addEventListener("DOMContentLoaded", initPanFunctionality);
 }
